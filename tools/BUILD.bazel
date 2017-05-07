@@ -1,0 +1,31 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@io_bazel_skydoc//skylark:skylark.bzl", "skylark_doc")
+
+package(default_visibility = ["//visibility:public"])
+
+bzl_library(
+    name = "rules",
+    srcs = glob(["**/*.bzl"]),
+)
+
+skylark_doc(
+    name = "docs",
+    srcs = [
+        ":rules",
+        "//tools/db",
+        "//tools/java",
+        "//tools/ui",
+    ],
+    format = "html",
+    site_root = "/rules",
+)
+
+filegroup(
+    name = "watch",
+    srcs = ["watch.py"],
+)
+
+filegroup(
+    name = "assemble_html",
+    srcs = ["assemble_html.py"],
+)

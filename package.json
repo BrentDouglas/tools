@@ -1,0 +1,19 @@
+{
+  "name": "machinecode-tools",
+  "description": "Build tools.",
+  "version": "0.0.1-SNAPSHOT",
+  "readme": "README.md",
+  "author": "Machine Code Limited",
+  "private": true,
+  "license": "UNLICENSED",
+  "preferGlobal": false,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:machinecode-io/tools.git"
+  },
+  "keywords": [
+    "machinecode",
+    "build",
+    "tools"
+  ]
+}

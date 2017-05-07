@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+set -eo
+
+readonly CACHE_DIR=$HOME/.gerritcodereview/buck-cache/npm-artifacts
+
+usage() {
+cat <<EOF
+Usage: download-npm [-f file] [-o output] [-r repository] [-b] [-p package] [-h]
+
+    -f  The name of the file
+    -o  The name of the output file
+    -p  The name of the NPM package to fetch
+    -d  Extra dependencies to bundle
+    -r  The NPM registry to fetch it from
+    -b  If we need to build this dependency
+    -h  Display this message and exit.
+
+    Downloads and caches an NPM package.
+
+EOF
+}
+
+FILE=""
+OUTPUT=""
+REGISTRY=""
+PACKAGE=""
+DEPS=""
+BUILD="false"
+
+while getopts "f:o:r:p:d:bh" opt; do
+    case ${opt} in
+        f)
+            FILE=${OPTARG}
+            ;;
+
+        o)
+            OUTPUT=${OPTARG}
+            ;;
+
+        r)
+            REGISTRY="${OPTARG}"
+            ;;
+
+        p)
+            PACKAGE="${OPTARG}"
+            ;;
+
+        d)
+            DEPS="${DEPS} ${OPTARG}"
+            ;;
+
+        b)
+            BUILD="true"
+            ;;
+
+        h)
+            usage
+            exit 0
+            ;;
+
+        /?)
+            echo "Invalid option: -${OPTARG}"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+
+if [ "${BUILD}" == "true" ]; then
+    BUILD_CMD="${NPM} rebuild ${PACKAGE}"
+else
+    BUILD_CMD="true"
+fi
+
+readonly NPM_VERSION="$(${NPM} --version)"
+readonly NODE_VERSION="$(${NODE} --version)"
+readonly SHA="$(shasum <<<"${PACKAGE} ${DEPS} ${BUILD} ${NODE_VERSION} ${NPM_VERSION} ${OS}" | cut -d' ' -f1)"
+
+mkdir -p "${CACHE_DIR}"
+readonly CACHED="${CACHE_DIR}/${FILE}-${SHA}"
+if [ ! -e "${CACHED}" ]; then
+    rm -rf node_modules \
+    && ${NPM} install "${PACKAGE}" ${DEPS} --registry "${REGISTRY}" \
+    && ${BUILD_CMD} \
+    && jar cfM "${CACHED}" -C node_modules . \
+    && rm -rf node_modules
+fi
+cp "${CACHED}" "${OUTPUT}"

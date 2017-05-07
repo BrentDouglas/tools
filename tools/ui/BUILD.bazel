@@ -1,0 +1,33 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+bzl_library(
+    name = "ui",
+    srcs = glob(["**/*.bzl"]),
+)
+
+filegroup(
+    name = "compress-html",
+    srcs = ["compress-html.py"],
+)
+
+filegroup(
+    name = "concat",
+    srcs = ["concat.js"],
+)
+
+filegroup(
+    name = "helpers",
+    srcs = ["helpers.js"],
+)
+
+filegroup(
+    name = "karma-conf",
+    srcs = ["karma.conf.js"],
+)
+
+filegroup(
+    name = "karma-shim",
+    srcs = ["karma-html-shim.js"],
+)

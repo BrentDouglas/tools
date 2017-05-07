@@ -1,0 +1,24 @@
+# Bazel
+bazel-*
+.srv
+.userbazelrc
+
+# NPM
+node_modules
+
+# VIM
+*.swp
+*~
+
+# IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+.ijwb/
+idea
+
+# Eclipse
+.metadata
+.project
+.settings

@@ -1,0 +1,47 @@
+"""Host conditions"""
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "darwin",
+    values = {
+        "host_cpu": "darwin",
+    },
+)
+
+config_setting(
+    name = "windows",
+    values = {
+        "host_cpu": "x64_windows",
+    },
+)
+
+# Rule debug target
+config_setting(
+    name = "rule",
+    define_values = {
+        "debug": "rule",
+    },
+)
+
+# UI debug targets
+config_setting(
+    name = "jasmine",
+    define_values = {
+        "debug": "jasmine",
+    },
+)
+
+config_setting(
+    name = "karma",
+    define_values = {
+        "debug": "karma",
+    },
+)
+
+config_setting(
+    name = "node",
+    define_values = {
+        "debug": "node",
+    },
+)

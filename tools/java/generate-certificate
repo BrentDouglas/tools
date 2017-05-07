@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -eE
+
+usage() {
+cat <<EOF
+Usage: generate-certificate -H <host>
+
+    Generate certificates to run the devserver over HTTPS
+
+    -H          The hostname to generate the certificate for
+    -h          Display this and exit
+
+EOF
+}
+
+
+create() {
+  local host="${1}"
+  local password="${host}"
+  keytool -genkeypair \
+    -alias "${host}" \
+    -keystore "${host}".keystore.jks \
+    -storepass "${password}" \
+    -keyalg RSA \
+    -keysize 4096 \
+    -keypass "${password}" \
+    -validity 3650 \
+    -dname "cn=${host}, ou=Tools, o=Machine Code Limited, c=HK"
+  keytool -importkeystore \
+    -srckeystore "${host}".keystore.jks \
+    -srcstorepass "${password}" \
+    -destkeystore "${host}".keystore.pkcs12 \
+    -deststoretype pkcs12 \
+    -deststorepass "${password}"
+  keytool -exportcert \
+    -alias "${host}" \
+    -file "${host}".cert \
+    -keystore "${host}".keystore.jks \
+    -storepass "${password}"
+  keytool -importcert \
+    -alias "${host}" \
+    -file "${host}".cert \
+    -keystore "${host}".truststore \
+    -storepass "${password}" \
+    -trustcacerts \
+    -noprompt
+}
+
+HOST="localhost"
+
+while getopts "H:h" opt; do
+    case ${opt} in
+        H)
+            HOST="${OPTARG}"
+            ;;
+
+        h)
+            usage
+            exit 0
+            ;;
+
+        /?)
+            echo "Invalid option: -${OPTARG}"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+create "${HOST}"

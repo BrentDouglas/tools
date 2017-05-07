@@ -1,0 +1,28 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "src",
+    srcs = glob(["*.java"]),
+)
+
+java_binary(
+    name = "devsrv",
+    srcs = [
+        ":src",
+    ],
+    main_class = "io.machinecode.tools.devsrv.Main",
+    resources = [
+        "@io_machinecode_devserver_certificates//:certs",
+    ],
+    runtime_deps = [
+        "@org_jboss_logging_jboss_logging//jar",
+        "@org_jboss_xnio_xnio_nio//jar",
+    ],
+    deps = [
+        "@gnu_getopt_java_getopt//jar",
+        "@io_undertow_undertow_core//jar",
+        "@io_undertow_undertow_servlet//jar",
+        "@javax_servlet//jar",
+        "@org_jboss_xnio_xnio_api//jar",
+    ],
+)

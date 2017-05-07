@@ -1,0 +1,19 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "src",
+    srcs = glob(["*.java"]),
+)
+
+java_library(
+    name = "sql",
+    srcs = [
+        ":src",
+    ],
+    deps = [
+        "@gnu_getopt_java_getopt//jar",
+        "@org_flywaydb_flyway_core//jar",
+        "@org_jooq_jooq_codegen//jar",
+        "@org_jooq_jooq_meta//jar",
+    ],
+)
