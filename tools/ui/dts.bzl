@@ -1,6 +1,7 @@
 load(
     "//tools:util.bzl",
     "extract_file",
+    "filter_filetypes",
     "get_debug_commands",
     "get_path",
     "get_path_of",
@@ -30,7 +31,7 @@ def _type_definition_library_impl(ctx):
     opts = ctx.attr.opts
     sopts = ctx.attr.string_opts
     base_dir = base + "/" + pkg
-    entry = '"' + '" "'.join([strip_base(file.path, base_dir) for file in dts_filetype.filter(ctx.files.entry)]) + '"'
+    entry = '"' + '" "'.join([strip_base(file.path, base_dir) for file in filter_filetypes(dts_filetype, ctx.files.entry)]) + '"'
     srcs = ctx.files.srcs
     deps = ctx.files.deps
     dts_bundle = ctx.file._dts_bundle
@@ -52,9 +53,9 @@ def _type_definition_library_impl(ctx):
             "p=$PWD",
             extract_module(dts_bundle.path),
         ] + extract_all_modules(ctx, ctx.attr.deps) +
-        [extract_file(file.path) for file in jar_filetype.filter(srcs)] +
+        [extract_file(file.path) for file in filter_filetypes(jar_filetype, srcs)] +
         ["export NODE_PATH=$p/node_modules"] +
-        [_process_file(file, base_dir) for file in dts_filetype.filter(srcs)] +
+        [_process_file(file, base_dir) for file in filter_filetypes(dts_filetype, srcs)] +
         [node],
     )
     cmd_file = ctx.new_file(ctx.label.name + "-dts-cmd")

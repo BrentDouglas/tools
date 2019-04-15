@@ -47,13 +47,31 @@ def _asciidoc_impl(ctx):
 
 doc_to_html = rule(
     implementation = _asciidoc_impl,
+#    doc = "Process a file with asciidoctor and output the results as html.",
     attrs = {
-        "srcs": attr.label_list(allow_files = True),
-        "resources": attr.label_list(allow_files = True),
-        "dest": attr.string(),
-        "imagesdir": attr.string(),
-        "attributes": attr.string_dict(),
-        "_type": attr.string(default = "html5"),
+        "srcs": attr.label_list(
+            allow_files = True,
+            doc = "The adoc files to compile.",
+        ),
+        "resources": attr.label_list(
+            allow_files = True,
+            doc = """Other files (themes, images, etc) that asciidoctor will use
+             when compiling them.""",
+        ),
+        "dest": attr.string(
+            doc = """The resulting name of the folder (and archive) containing the docs
+                         if not supplied the name of the label will be used.""",
+        ),
+        "imagesdir": attr.string(
+            doc = """A directory containing images that asciidoctor should look in.
+                         The contents of this director must be included in the "resources".""",
+        ),
+        "attributes": attr.string_dict(
+            doc = """Settings to pass to the asciidoctor CLI.""",
+        ),
+        "_type": attr.string(
+            default = "html5",
+        ),
     },
     outputs = {
         "tar": "%{name}.tar",
@@ -74,6 +92,7 @@ Args:
 
 doc_to_pdf = rule(
     implementation = _asciidoc_impl,
+#    doc = "Process a file with asciidoctor and output the results as a PDF.",
     attrs = {
         "srcs": attr.label_list(allow_files = True),
         "resources": attr.label_list(allow_files = True),

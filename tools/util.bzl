@@ -1,36 +1,36 @@
 """Utilities that are applicable in multiple areas"""
 
-ANSI_MAGENTA  = "\033[35m"
-ANSI_CYAN     = "\033[36m"
-ANSI_WHITE    = "\033[37m"
-ANSI_RESET    = "\033[00m"
+ANSI_MAGENTA = "\033[35m"
+ANSI_CYAN = "\033[36m"
+ANSI_WHITE = "\033[37m"
+ANSI_RESET = "\033[00m"
 
 def is_archive(path):
-  return is_zip(path) or is_jar(path) or is_tar(path)
+    return is_zip(path) or is_jar(path) or is_tar(path)
 
 def is_zip(path):
-  return path.endswith(".zip")
+    return path.endswith(".zip")
 
 def is_any_jar(path):
-  return is_jar(path) or is_srcjar(path)
+    return is_jar(path) or is_srcjar(path)
 
 def is_jar(path):
-  return path.endswith(".jar")
+    return path.endswith(".jar")
 
 def is_srcjar(path):
-  return path.endswith(".srcjar")
+    return path.endswith(".srcjar")
 
 def is_any_tar(path):
-  return is_tgz(path) or is_tbz(path) or is_tar(path)
+    return is_tgz(path) or is_tbz(path) or is_tar(path)
 
 def is_tar(path):
-  return path.endswith(".tar")
+    return path.endswith(".tar")
 
 def is_tgz(path):
-  return path.endswith(".tgz") or path.endswith(".tar.gz")
+    return path.endswith(".tgz") or path.endswith(".tar.gz")
 
 def is_tbz(path):
-  return path.endswith(".tar.bz2") or path.endswith(".tar.bzip2")
+    return path.endswith(".tar.bz2") or path.endswith(".tar.bzip2")
 
 def list_file(path, sep):
     return sep.join([
@@ -48,14 +48,13 @@ def join_list(prefix, list):
     for i in range(0, n):
         it = list[i]
         if not it:
-          continue
+            continue
         if ret:
-          ret += ","
+            ret += ","
         if i != 0:
-          ret += "\n"
+            ret += "\n"
         ret += prefix + it
     return ret
-
 
 def join_dict(prefix, dict):
     n = len(dict)
@@ -64,19 +63,17 @@ def join_dict(prefix, dict):
     for k in dict:
         v = dict[k]
         if ret:
-          ret += ","
+            ret += ","
         if i != 0:
-          ret += "\n"
+            ret += "\n"
         ret += prefix + '"%s": "%s"' % (k, v)
         i += 1
     return ret
 
-
 def strip_base(path, *args):
-  for base in args:
-      path = path if not path.startswith(base) else path[len(base) + 1:]
-  return path
-
+    for base in args:
+        path = path if not path.startswith(base) else path[len(base) + 1:]
+    return path
 
 def get_path(ctx, attr, file):
     base = ctx.bin_dir.path
@@ -96,43 +93,42 @@ def get_path_of(ctx, attr, path):
     return path
 
 def get_debug_commands(ctx, *args):
-  """Generate commands to print information about the execution environment of a rule
+    """Generate commands to print information about the execution environment of a rule
 
-  Args:
-    ctx: The context object
-    args: A list of configuration files to print out
-  """
-  label = "//" + ctx.label.package + ":" + ctx.label.name
-  ret = [
-    'echo -e "%sDEBUG: Start rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET),
-    'echo -e "%sThe sandbox contains these files:%s"' % (ANSI_WHITE, ANSI_RESET),
-    "find . -not -type d | grep -v node_modules",
-    'echo -en "%s"' % ANSI_RESET
-  ]
-  for cfg in args:
-    ret.append('echo -e "%sThe config file %s%s%s %scontains:%s"' % (ANSI_WHITE, ANSI_MAGENTA, cfg, ANSI_RESET, ANSI_WHITE, ANSI_RESET))
-    ret.append('cat %s' % cfg)
-    ret.append('echo -en "%s"' % ANSI_RESET)
-  ret.append('echo -e "%sDEBUG: End rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET))
-  return ret;
+    Args:
+      ctx: The context object
+      args: A list of configuration files to print out
+    """
+    label = "//" + ctx.label.package + ":" + ctx.label.name
+    ret = [
+        'echo -e "%sDEBUG: Start rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET),
+        'echo -e "%sThe sandbox contains these files:%s"' % (ANSI_WHITE, ANSI_RESET),
+        "find . -not -type d | grep -v node_modules",
+        'echo -en "%s"' % ANSI_RESET,
+    ]
+    for cfg in args:
+        ret.append('echo -e "%sThe config file %s%s%s %scontains:%s"' % (ANSI_WHITE, ANSI_MAGENTA, cfg, ANSI_RESET, ANSI_WHITE, ANSI_RESET))
+        ret.append("cat %s" % cfg)
+        ret.append('echo -en "%s"' % ANSI_RESET)
+    ret.append('echo -e "%sDEBUG: End rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET))
+    return ret
 
 def get_post_debug_commands(ctx):
-  """Generate commands to print information about the execution environment of a rule
+    """Generate commands to print information about the execution environment of a rule
 
-  Args:
-    ctx: The context object
-    args: A list of configuration files to print out
-  """
-  label = "//" + ctx.label.package + ":" + ctx.label.name
-  ret = [
-    'echo -e "%sDEBUG: Start post rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET),
-    'echo -e "%sAfter execution the sandbox contains these files:%s"' % (ANSI_WHITE, ANSI_RESET),
-    "find . -not -type d | grep -v node_modules",
-    'echo -en "%s"' % ANSI_RESET
-  ]
-  ret.append('echo -e "%sDEBUG: End post rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET))
-  return ret;
-
+    Args:
+      ctx: The context object
+      args: A list of configuration files to print out
+    """
+    label = "//" + ctx.label.package + ":" + ctx.label.name
+    ret = [
+        'echo -e "%sDEBUG: Start post rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET),
+        'echo -e "%sAfter execution the sandbox contains these files:%s"' % (ANSI_WHITE, ANSI_RESET),
+        "find . -not -type d | grep -v node_modules",
+        'echo -en "%s"' % ANSI_RESET,
+    ]
+    ret.append('echo -e "%sDEBUG: End post rule%s %s%s%s %s"' % (ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, label, ANSI_RESET, ANSI_RESET))
+    return ret
 
 def _template_file_impl(ctx):
     ctx.template_action(
@@ -162,9 +158,9 @@ def _move_impl(ctx):
         "cp %s %s" % (ctx.file.src.path, ctx.outputs.dest.path),
     ])
     ctx.action(
-        inputs=[ctx.file.src],
-        outputs=[ctx.outputs.dest],
-        command=cmd,
+        inputs = [ctx.file.src],
+        outputs = [ctx.outputs.dest],
+        command = cmd,
     )
     return struct(
         files = depset([ctx.outputs.dest]),
@@ -184,13 +180,12 @@ Args:
   dest: The output location to move the file to
 """
 
-
 def _move_up_impl(ctx):
     """
     Move a set of files up some dirs.
     """
     dirs = ctx.attr.dirs
-    dirs = dirs if dirs.endswith('/') else dirs + '/'
+    dirs = dirs if dirs.endswith("/") else dirs + "/"
     moves = []
     outs = []
     for i in range(0, len(ctx.attr.srcs)):
@@ -208,9 +203,9 @@ def _move_up_impl(ctx):
         "p=$PWD",
     ] + moves)
     ctx.action(
-        inputs=ctx.files.srcs,
-        outputs=outs,
-        command=cmd,
+        inputs = ctx.files.srcs,
+        outputs = outs,
+        command = cmd,
     )
     return struct(
         files = depset(outs),
@@ -218,9 +213,15 @@ def _move_up_impl(ctx):
 
 move_up = rule(
     implementation = _move_up_impl,
+#    doc = "Move a set of files up some dirs.",
     attrs = {
-        "srcs": attr.label_list(allow_files = True),
-        "dirs": attr.string(),
+        "srcs": attr.label_list(
+            allow_files = True,
+            doc = "The input files.",
+        ),
+        "dirs": attr.string(
+            doc = "The directories to move the files up",
+        ),
     },
 )
 """Move a set of files up some dirs.
@@ -232,7 +233,7 @@ Args:
 
 def _move_down_impl(ctx):
     dirs = ctx.attr.dirs
-    dirs = dirs if dirs.endswith('/') else dirs + '/'
+    dirs = dirs if dirs.endswith("/") else dirs + "/"
     moves = []
     outs = []
     for i in range(0, len(ctx.attr.srcs)):
@@ -250,9 +251,9 @@ def _move_down_impl(ctx):
         "p=$PWD",
     ] + moves)
     ctx.action(
-        inputs=ctx.files.srcs,
-        outputs=outs,
-        command=cmd,
+        inputs = ctx.files.srcs,
+        outputs = outs,
+        command = cmd,
     )
     return struct(
         files = depset(outs),
@@ -260,9 +261,15 @@ def _move_down_impl(ctx):
 
 move_down = rule(
     implementation = _move_down_impl,
+#    doc = "Move a set of files down some dirs.",
     attrs = {
-        "srcs": attr.label_list(allow_files = True),
-        "dirs": attr.string(),
+        "srcs": attr.label_list(
+            allow_files = True,
+            doc = "The input files",
+        ),
+        "dirs": attr.string(
+            doc = "The directories to move the files down into",
+        ),
     },
 )
 """Move a set of files down some dirs.
@@ -272,10 +279,18 @@ Args:
   dirs: The directories to move the files down into
 """
 
+def filter_filetypes(types, srcs):
+    ret = []
+    for src in srcs:
+        for type in types:
+            if src.basename.endswith(type):
+                ret.append(src)
+                break
+    return ret
+
 def _filter_impl(ctx):
     srcs = ctx.files.srcs
-    filetype = FileType(ctx.attr.types)
-    outs = filetype.filter(srcs)
+    outs = filter_filetypes(ctx.attr.types, srcs)
     return struct(
         files = depset(outs),
     )
@@ -389,8 +404,8 @@ def _dirname_impl(ctx):
                 template = file,
                 output = out,
                 substitutions = {
-                    '{{__dirname}}': ctx.attr.src_prefix + path[:path.rindex('/')]
-                }
+                    "{{__dirname}}": ctx.attr.src_prefix + path[:path.rindex("/")],
+                },
             )
     return struct(
         files = depset(outputs),
@@ -425,9 +440,9 @@ def _template_content_impl(ctx):
         """echo "${CONTENT/%s/$(cat %s)}" > %s""" % (ctx.attr.token, data.path, output.path),
     ])
     ctx.action(
-        inputs=[template, data],
-        outputs=[output],
-        command=cmd,
+        inputs = [template, data],
+        outputs = [output],
+        command = cmd,
     )
     return struct(
         files = depset([output]),
@@ -463,9 +478,9 @@ def _base_64_impl(ctx):
         """base64 -i %s | tr -d '\n' > %s""" % (src.path, output.path),
     ])
     ctx.action(
-        inputs=[src],
-        outputs=[output],
-        command=cmd,
+        inputs = [src],
+        outputs = [output],
+        command = cmd,
     )
     return struct(
         files = depset([output]),
@@ -495,9 +510,9 @@ def _get_class_list_impl(ctx):
     for file in ctx.files.deps:
         cmd += """ \\\n  && (jar tf $p/%s | grep '\.class$' | sed 's:\\/:.:g' | sed 's:\.class$::') >> %s""" % (file.path, dest.path)
     ctx.action(
-        inputs=deps,
-        outputs=[dest],
-        command=cmd,
+        inputs = deps,
+        outputs = [dest],
+        command = cmd,
     )
     return struct(
         files = depset([dest]),
@@ -518,22 +533,22 @@ Args:
 """
 
 def _repack_archive(unpack, pack, dir, in_path, out_path):
-  """Repackage an archive
+    """Repackage an archive
 
-  Args:
-    unpack: The command to unpack the original archive
-    pack: The command to pack the new archive
-    dir: An optional dir to move the content into within the tarball
-    in_path: The path to the original archive
-    out_path: The path to the new archive
-  """
-  act_dir = "test" if not dir else "test/%s" % dir
-  return " \\\n  && " + " \\\n  && ".join([
-      "mkdir -p %s" % act_dir,
-      "(cd %s && %s $p/%s)" % (act_dir, unpack, in_path),
-      "(cd test && %s $p/%s .)" % (pack, out_path),
-      "rm -rf test",
-  ])
+    Args:
+      unpack: The command to unpack the original archive
+      pack: The command to pack the new archive
+      dir: An optional dir to move the content into within the tarball
+      in_path: The path to the original archive
+      out_path: The path to the new archive
+    """
+    act_dir = "test" if not dir else "test/%s" % dir
+    return " \\\n  && " + " \\\n  && ".join([
+        "mkdir -p %s" % act_dir,
+        "(cd %s && %s $p/%s)" % (act_dir, unpack, in_path),
+        "(cd test && %s $p/%s .)" % (pack, out_path),
+        "rm -rf test",
+    ])
 
 def _to_tar_impl(ctx):
     srcs = ctx.files.srcs
@@ -541,9 +556,9 @@ def _to_tar_impl(ctx):
     dir = ctx.attr.dir
     tar = "tar cf"
     if is_tgz(ext):
-      tar = "tar czf"
+        tar = "tar czf"
     if is_tbz(ext):
-      tar = "tar cjf"
+        tar = "tar cjf"
     cmd = " \\\n  && ".join([
         "export PATH",
         "p=$PWD",
@@ -551,35 +566,35 @@ def _to_tar_impl(ctx):
     outs = []
     for file in srcs:
         if is_jar(file.path):
-          out = ctx.new_file(file.basename[:4] + ext)
-          outs.append(out)
-          cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
+            out = ctx.new_file(file.basename[:4] + ext)
+            outs.append(out)
+            cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
         if is_srcjar(file.path):
-          out = ctx.new_file(file.basename[:7] + ext)
-          outs.append(out)
-          cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
+            out = ctx.new_file(file.basename[:7] + ext)
+            outs.append(out)
+            cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
         if is_zip(file.path):
-          out = ctx.new_file(file.basename[:4] + ext)
-          outs.append(out)
-          cmd += _repack_archive("unzip", tar, dir, file.path, out.path)
+            out = ctx.new_file(file.basename[:4] + ext)
+            outs.append(out)
+            cmd += _repack_archive("unzip", tar, dir, file.path, out.path)
         if is_tar(file.path):
-          out = ctx.new_file(file.basename[:4] + ext)
-          outs.append(out)
-          cmd += _repack_archive("tar xf", tar, dir, file.path, out.path)
+            out = ctx.new_file(file.basename[:4] + ext)
+            outs.append(out)
+            cmd += _repack_archive("tar xf", tar, dir, file.path, out.path)
         if is_tgz(file.path):
-          n = 4 if file.path.endswith(".tgz") else 7
-          out = ctx.new_file(file.basename[:n] + ext)
-          outs.append(out)
-          cmd += _repack_archive("tar zxf", tar, dir, file.path, out.path)
+            n = 4 if file.path.endswith(".tgz") else 7
+            out = ctx.new_file(file.basename[:n] + ext)
+            outs.append(out)
+            cmd += _repack_archive("tar zxf", tar, dir, file.path, out.path)
         if is_tbz(file.path):
-          n = 7 if file.path.endswith(".tar.bz2") else 9
-          out = ctx.new_file(file.basename[:n] + ext)
-          outs.append(out)
-          cmd += _repack_archive("tar jxf", tar, dir, file.path, out.path)
+            n = 7 if file.path.endswith(".tar.bz2") else 9
+            out = ctx.new_file(file.basename[:n] + ext)
+            outs.append(out)
+            cmd += _repack_archive("tar jxf", tar, dir, file.path, out.path)
     ctx.action(
-        inputs=srcs,
-        outputs=outs,
-        command=cmd,
+        inputs = srcs,
+        outputs = outs,
+        command = cmd,
     )
     return struct(
         files = depset(outs),
@@ -596,7 +611,7 @@ to_tar = rule(
             ".tgz",
             ".tar.gz",
             ".tar.bz2",
-            ".tar.bzip2"
+            ".tar.bzip2",
         ]),
         "dir": attr.string(),
         "extension": attr.string(mandatory = False, default = ".tar"),
@@ -609,6 +624,3 @@ Args:
   dir: An optional dir to move the content into within the tarball
   extension: The output extension of the tarballs. It must start with a dot. Defaults to '.tar'
 """
-
-
-

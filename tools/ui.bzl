@@ -15,12 +15,12 @@ load(
     "strip_base",
 )
 
-js_filetype = FileType([".js"])
-css_filetype = FileType([".css"])
-dts_filetype = FileType([".d.ts"])
-jar_filetype = FileType([".srcjar", ".jar"])
-tar_filetype = FileType([".tar", ".tgz", ".tar.gz"])
-ts_filetype = FileType([".ts", ".d.ts"])
+js_filetype = [".js"]
+css_filetype = [".css"]
+dts_filetype = [".d.ts"]
+jar_filetype = [".srcjar", ".jar"]
+tar_filetype = [".tar", ".tgz", ".tar.gz"]
+ts_filetype = [".ts", ".d.ts"]
 
 def extract_module(path):
     if is_any_jar(path):
@@ -148,26 +148,26 @@ def _pkg_app_impl(ctx):
     js = ctx.files.js
     css = ctx.files.css
     index = ctx.file.index_html
+    sw = ctx.file._service_worker
     hash = "-H" if ctx.attr.hash else ""
 
-    js_dir = js_filetype.filter(js)[0].dirname
-    css_dir = "" if not css else """-C "%s/" """ % css_filetype.filter(css)[0].dirname
-
-    mv_html = ["    \\n \\".join([
-        "/usr/bin/env python %s" % assemble.path,
+    mv_html = [" \\\n    ".join([
+        "/usr/bin/env python3 %s" % assemble.path,
         hash,
-        """-J "%s/" """ % js_dir,
-        css_dir,
         """-D "$p/tar/" """,
-    ] + ["""-j "%s/" """ % x.path for x in js] + [
-    ] + ["""-c "%s/" """ % x.path for x in css] + [
-        """-a "%s" """ % ctx.attr.title,
+    ] + ["""-j "%s" """ % x.path for x in js] + [
+    ] + ["""-c "%s" """ % x.path for x in css] + [
         """-i "%s" """ % index.path,
-        """-o "$p/tar/%s" """ % index.basename,
+        """-o "$p/tar/index.html" """,
     ])]
     for file in ctx.files.html:
         mv_html += [
             """cp "%s" "$p/tar/%s" """ % (file.path, file.basename),
+        ]
+    extract_deps = []
+    for file in ctx.files.deps:
+        extract_deps += [
+            """tar -C "$p/tar/" -xf "%s" """ % (file.path),
         ]
     mv_img = []
     for i in range(0, len(ctx.attr.img)):
@@ -184,6 +184,12 @@ def _pkg_app_impl(ctx):
             path = get_path(ctx, attr, file)
             mv_data.append("mkdir -p $(dirname $p/tar/%s) && cp %s $p/tar/%s" % (path, file.path, path))
     mv_icons = ["cp %s $p/tar/icons/%s" % (file.path, file.basename) for file in ctx.files.icons]
+    service_worker = [] if not ctx.attr.service_worker else [
+        """export FILES="$( ( cd $p/tar/ && find -type f | sort | xargs shasum | grep -v %s | awk '{print "[" "\\"" $1 "\\"" "," "\\"" $2 "\\"" "]"}' | tr '\\n' ',' ) )" """ % sw.basename,
+        """export SHA="$( ( cd $p/tar/ && find -type f | sort | shasum | cut -d' ' -f1 ) )" """,
+        """export CONTENT="$(cat %s | sed "s/TEMPLATE_VERSION/$SHA/")" """ % (sw.path),
+        """echo "${CONTENT/"TEMPLATE_FILES"/$FILES}" > $p/tar/%s""" % (ctx.attr.service_worker)
+    ]
 
     cmd = " \\\n  && ".join(
         [
@@ -191,10 +197,12 @@ def _pkg_app_impl(ctx):
             "p=$PWD",
             "mkdir -p $p/tar/img $p/tar/icons",
         ] +
+        extract_deps +
         mv_html +
         mv_img +
         mv_data +
         mv_icons +
+        service_worker +
         ['if [ $(uname) == "Darwin" ] ; then export TAR_LINK_OPT="L" else export TAR_LINK_OPT="H"; fi'] +
         ['( cd $p/tar/ && tar "cf${TAR_LINK_OPT}" - . > $p/%s )' % ctx.outputs.tar.path],
     )
@@ -205,7 +213,7 @@ def _pkg_app_impl(ctx):
         content = cmd,
     )
     ctx.actions.run_shell(
-        inputs = js + css + [cmd_file, assemble, index] + ctx.files.icons + ctx.files.html + ctx.files.img + ctx.files.data,
+        inputs = js + css + [cmd_file, assemble, index, sw] + ctx.files.deps + ctx.files.icons + ctx.files.html + ctx.files.img + ctx.files.data,
         outputs = outs,
         command = "bash %s" % cmd_file.path,
     )
@@ -221,8 +229,13 @@ pkg_app = rule(
         "icons": attr.label_list(mandatory = False, allow_files = [".woff", ".eot", ".ttf", ".svf"]),
         "img": attr.label_list(allow_files = [".png", ".svg", ".jpg", ".jpeg"]),
         "data": attr.label_list(allow_files = True),
-        "title": attr.string(),
         "hash": attr.bool(),
+        "deps": attr.label_list(allow_files = [".tar"]),
+        "service_worker": attr.string(mandatory = False),
+        "_service_worker": attr.label(
+            default = Label("//tools:service_worker"),
+            allow_single_file = True,
+        ),
         "_assemble": attr.label(
             default = Label("//tools:assemble_html"),
             allow_single_file = True,

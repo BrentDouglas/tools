@@ -6,21 +6,16 @@ def _coverage_html_impl(ctx):
     mvs = []
     rels = []
     for file in data:
-        rel = file.path[file.path.find("java/") + 5:]
+        rel = file.path[file.path.find("testlogs/") + 9:]
         rels.append(rel)
-        mvs.append("mkdir -p $(dirname $p/java/%s) && mv $p/%s $p/java/%s" % (rel, file.path, rel))
-    for file in srcs:
-        rel = file.path[file.path.find("java/") + 5:]
-        mvs.append("mkdir -p $(dirname $p/java/%s) && mv $p/%s $p/java/%s" % (rel, file.path, rel))
+        mvs.append("mkdir -p $(dirname $p/%s) && mv $p/%s $p/%s" % (rel, file.path, rel))
 
     command = " \\\n  && ".join([
         "export PATH",
         "p=$PWD",
-        "mkdir $p/java/",
         "mkdir $p/tar/",
         ] + mvs + [
-        "cd $p/java/",
-        "genhtml -q -o $p/tar/ \\\n" + (" \\\n".join(["    $p/java/%s" % file for file in rels])),
+        "genhtml -q -o $p/tar/ \\\n" + (" \\\n".join(["    $p/%s" % file for file in rels])),
         "cd $p/tar/",
         "tar cf - . > $p/%s" % tar.path,
     ])

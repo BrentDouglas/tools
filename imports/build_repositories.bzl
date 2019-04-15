@@ -20,7 +20,7 @@ def build_repositories(
 
     npm_archive(
         name = "csso-cli",
-        version = "1.1.0",
+        version = "2.0.2",
         types = False,
         deps = {
             "csso": "3.5.1",
@@ -28,23 +28,23 @@ def build_repositories(
     )
     npm_archive(
         name = "typescript",
-        version = "3.1.3",
+        version = "3.4.3",
         types = False,
     )
     npm_archive(
         name = "tslint",
-        version = "5.11.0",
+        version = "5.15.0",
         types = False,
     )
     npm_archive(
         name = "html-minifier",
-        version = "3.5.21",
+        version = "4.0.0",
         types = False,
     )
     npm_archive(
         name = "webfont",
         types = False,
-        version = "8.1.4",
+        version = "8.2.1",
     )
 
     #  npm_archive(
@@ -59,12 +59,12 @@ def build_repositories(
     #  )
     npm_archive(
         name = "tsickle",
-        version = "0.29.0",
+        version = "0.34.3",
         types = False,
     )
     npm_archive(
         name = "node-sass",
-        version = "4.9.4",
+        version = "4.11.0",
         types = False,
         rebuild = True,
     )
@@ -75,28 +75,29 @@ def build_repositories(
     )
     npm_archive(
         name = "rollup",
-        version = "0.60.7",
+        version = "1.10.0",
         types = False,
         deps = {
-            "rollup-plugin-commonjs": "9.1.3",
-            "rollup-plugin-node-resolve": "3.3.0",
-            "rollup-plugin-replace": "2.0.0",
+            "rollup-plugin-commonjs": "9.3.4",
+            "rollup-plugin-node-resolve": "4.2.3",
+            "rollup-plugin-replace": "2.2.0",
             "rollup-plugin-sourcemaps": "0.4.2",
-            "rollup-plugin-multi-entry": "2.0.2",
+            "rollup-plugin-multi-entry": "2.1.0",
         },
     )
     npm_archive(
         name = "webpack",
-        version = "4.12.0",
+        version = "4.30.0",
         types = False,
     )
     npm_archive(
         name = "source-map-loader",
-        version = "0.2.3",
+        version = "0.2.4",
         types = False,
     )
     npm_archive(
         name = "jest",
-        version = "23.1.0",
-        types_version = "23.0.2",
+        version = "24.7.1",
+        types_package = "@jest/types",
+        types_version = "24.7.0",
     )

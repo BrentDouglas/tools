@@ -1,6 +1,7 @@
 load(
     "//tools:util.bzl",
     "extract_file",
+    "filter_filetypes",
     "get_debug_commands",
     "get_path",
     "get_path_of",
@@ -28,7 +29,7 @@ def _typescript_config_impl(ctx, dts = []):
     sopts = ctx.attr.string_opts
     srcs = ctx.files.srcs
     types = ctx.attr.types
-    jars = jar_filetype.filter(srcs)
+    jars = filter_filetypes(jar_filetype, srcs)
     pkg = ctx.label.package
     include = ctx.attr.include
     root_dirs = ctx.attr.root_dirs
@@ -102,7 +103,7 @@ def _typescript_library_impl(ctx):
     dest = ctx.attr.dest
     srcs = ctx.files.srcs
     deps = ctx.files.deps
-    jars = jar_filetype.filter(srcs)
+    jars = filter_filetypes(jar_filetype, srcs)
     sopts = ctx.attr.string_opts
     opts = ctx.attr.opts
 

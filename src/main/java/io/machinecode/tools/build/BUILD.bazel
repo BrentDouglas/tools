@@ -1,0 +1,19 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "src",
+    srcs = glob(["*.java"]),
+)
+
+java_binary(
+    name = "build",
+    srcs = [
+        ":src",
+    ],
+    main_class = "io.machinecode.tools.build.Main",
+    deps = [
+        "@gnu_getopt_java_getopt//jar",
+        "@org_antlr_st4//jar",
+        "@org_yaml_snakeyaml//jar",
+    ],
+)

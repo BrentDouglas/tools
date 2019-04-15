@@ -29,3 +29,8 @@ filegroup(
     name = "assemble_html",
     srcs = ["assemble_html.py"],
 )
+
+filegroup(
+    name = "service_worker",
+    srcs = ["sw.js"],
+)
