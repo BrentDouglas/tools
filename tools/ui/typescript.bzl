@@ -34,7 +34,7 @@ def _typescript_config_impl(ctx, dts = []):
     include = ctx.attr.include
     root_dirs = ctx.attr.root_dirs
 
-    options = '        "rootDir": "%s",\n' % pkg
+    options = ''
     for k in opts:
         options += '        "%s": %s,\n' % (k, opts[k])
     for k in sopts:
@@ -47,6 +47,8 @@ def _typescript_config_impl(ctx, dts = []):
         #            options += ',           "%s/%s"\n' % (base, root_dir)
         #            options += ',           "%s/%s"\n' % (gen_base, root_dir)
         options += "        ]"
+    else:
+        options += '        "rootDir": "%s",\n' % pkg
     type_list = ""
     for idx, type in enumerate(types):
         if idx == 0:
