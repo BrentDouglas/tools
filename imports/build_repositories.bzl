@@ -46,6 +46,11 @@ def build_repositories(
         types = False,
         version = "8.2.1",
     )
+    npm_archive(
+        name = "uglify-js",
+        types = False,
+        version = "3.4.5",
+    )
 
     #  npm_archive(
     #      name = "grpc-web-client",
@@ -75,14 +80,26 @@ def build_repositories(
     )
     npm_archive(
         name = "rollup",
-        version = "1.10.0",
+        version = "1.10.1",
         types = False,
         deps = {
+            "rollup-plugin-babel": "4.3.2",
             "rollup-plugin-commonjs": "9.3.4",
             "rollup-plugin-node-resolve": "4.2.3",
             "rollup-plugin-replace": "2.2.0",
             "rollup-plugin-sourcemaps": "0.4.2",
             "rollup-plugin-multi-entry": "2.1.0",
+            "@babel/core": "7.4.3",
+        },
+    )
+    npm_archive(
+        name = "babel-cli",
+        package = "@babel/cli",
+        version = "7.4.3",
+        types = False,
+        deps = {
+            "@babel/core": "7.4.3",
+            "@babel/preset-env": "7.4.4",
         },
     )
     npm_archive(
@@ -100,4 +117,9 @@ def build_repositories(
         version = "24.7.1",
         types_package = "@jest/types",
         types_version = "24.7.0",
+    )
+    npm_archive(
+        name = "google-closure-compiler",
+        version = "20190415.0.0",
+        types = False,
     )

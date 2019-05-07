@@ -68,7 +68,8 @@ scripts = ''
 for js_file in js_files:
     with open(js_file, encoding='utf-8', mode='r') as fin:
         js_name = os.path.basename(js_file)
-        if not hash_names:
+        is_map = js_name.endswith(".map")
+        if not hash_names or is_map:
             js_out = js_name
         else:
             sha = hashlib.sha1()
@@ -76,11 +77,12 @@ for js_file in js_files:
             js_sum = sha.hexdigest()[0:8]
             js_out = js_name[:-3] + '.' + js_sum + '.js'
         js_out = 'js/%s' % js_out
-        if scripts:
-            scripts += '"></script><script src="%s' % js_out
-        else:
-            scripts += js_out
-        os.makedirs(os.path.join(out_dir, 'js'))
+        if not is_map:
+            if scripts:
+                scripts += '"></script><script src="%s' % js_out
+            else:
+                scripts += js_out
+        os.makedirs(os.path.join(out_dir, 'js'), mode=0o777, exist_ok=True)
         out_file = out_dir + js_out
         if js_file != out_file:
             shutil.copy(js_file, out_file)
@@ -89,7 +91,8 @@ styles = ''
 for css_file in css_files:
     with open(css_file, encoding='utf-8', mode='r') as fin:
         css_name = os.path.basename(css_file)
-        if not hash_names:
+        is_map = css_name.endswith(".map")
+        if not hash_names or is_map:
             css_out = css_name
         else:
             sha = hashlib.sha1()
@@ -97,11 +100,12 @@ for css_file in css_files:
             css_sum = sha.hexdigest()[0:8]
             css_out = css_name[:-4] + '.' + css_sum + '.css'
         css_out = 'css/%s' % css_out
-        if styles:
-            styles += '"><link rel="stylesheet" href="%s' % css_out
-        else:
-            styles += css_out
-        os.makedirs(os.path.join(out_dir, 'css'))
+        if not is_map:
+            if styles:
+                styles += '"><link rel="stylesheet" href="%s' % css_out
+            else:
+                styles += css_out
+        os.makedirs(os.path.join(out_dir, 'css'), mode=0o777, exist_ok=True)
         out_file = out_dir + css_out
         if css_file != out_file:
             shutil.copy(css_file, out_file)

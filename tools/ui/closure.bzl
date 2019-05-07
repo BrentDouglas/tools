@@ -16,41 +16,45 @@ load(
 )
 load("//tools:ui.bzl", "extract_all_modules", "extract_module")
 
-def _babel_library_impl(ctx):
+def _closure_library_impl(ctx):
     base = ctx.bin_dir.path
     srcs = ctx.files.srcs
     deps = ctx.files.deps
     opts = ctx.attr.opts
     dest = ctx.outputs.dest
+    map = ctx.outputs.map
     sopts = ctx.attr.string_opts
 
     node = " ".join(
-        ["%s node_modules/@babel/cli/bin/babel.js" % ctx.file._node.path] +
-        [x.path for x in srcs] +
+        ["%s node_modules/google-closure-compiler/cli.js" % ctx.file._node.path] +
+        ["--js=%s" % x.path for x in srcs] +
         ["--%s" % x for x in opts] +
         ["--%s %s" % (k, sopts[k]) for k in sopts] +
-        ["> %s" % (dest.path)],
+        (["--create_source_map %s" % map.path] if map else []) +
+        ["--js_output_file=%s" % (dest.path)],
     )
     cmd = " \\\n  && ".join(
         [
             "export PATH",
             "p=$PWD",
-            extract_module(ctx.file._babel.path),
+            extract_module(ctx.file._closure.path),
         ] +
         [extract_module(dep.path) if not dep.path.startswith(base) else extract_module(dep.path[len(base) + 1:]) for dep in ctx.files.deps] +
         ["export NODE_PATH=$p/node_modules"] +
-        [node],
+#        ["find node_modules/google-closure-compiler"] +
+        [node] +
+        ["find . | grep -v node_modules"],
     )
 
-    outputs = [dest]
-    cmd_file = ctx.new_file(ctx.label.name + "babel-cmd")
+    outputs = [dest] + ([map] if map else [])
+    cmd_file = ctx.new_file(ctx.label.name + "closure-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
         is_executable = True,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, cmd_file] + srcs + deps + [ctx.file._babel],
+        inputs = [ctx.file._node, cmd_file] + srcs + deps + [ctx.file._closure],
         outputs = outputs,
         command = "bash %s" % cmd_file.path,
     )
@@ -58,8 +62,8 @@ def _babel_library_impl(ctx):
         files = depset(outputs),
     )
 
-babel_library = rule(
-    implementation = _babel_library_impl,
+closure_library = rule(
+    implementation = _closure_library_impl,
     attrs = {
         "srcs": attr.label_list(allow_files = [
             ".js",
@@ -73,8 +77,8 @@ babel_library = rule(
         ]),
         "opts": attr.string_list(),
         "string_opts": attr.string_dict(),
-        "_babel": attr.label(
-            default = Label("@babel-cli//pkg"),
+        "_closure": attr.label(
+            default = Label("@google-closure-compiler//pkg"),
             allow_single_file = True,
         ),
         "_node": attr.label(
@@ -84,9 +88,10 @@ babel_library = rule(
             cfg = "host",
         ),
         "dest": attr.output(),
+        "map": attr.output(),
     },
 )
-"""Convert files using babel.
+"""Convert files using closure.
 
 Args:
   srcs: The javascript source files to convert. They may either be regular
