@@ -6,17 +6,23 @@ def _google_java_format_test_impl(ctx):
     opts = ctx.attr.opts
     sopts = ctx.attr.string_opts
 
-    cmd = " \\\n  ".join(
-        ["java -jar %s" % formatter.path] +
-        ["--set-exit-if-changed --dry-run"] +
-        ["--%s" % x for x in opts] +
-        ["--%s %s" % (k, sopts[k]) for k in sopts] +
-        [x.path for x in srcs],
-    )
+    cmds = ["export RETVAL=0"]
+    for src in srcs:
+        cmd = " \\\n  ".join(
+            ["java -jar %s" % formatter.path] +
+            ["--set-exit-if-changed"] +
+            ["--%s" % x for x in opts] +
+            ["--%s %s" % (k, sopts[k]) for k in sopts] +
+            [src.path] +
+            [" > %s.formatted" % src.path] +
+            ["|| { export RETVAL=1; find . ; echo '%s'; diff %s %s.formatted; }" % (src.path, src.path, src.path)],
+        )
+        cmds.append(cmd)
+    cmds.append("exit ${RETVAL}")
 
     ctx.file_action(
         output = ctx.outputs.executable,
-        content = cmd,
+        content = " \\\n ; ".join(cmds),
         executable = True,
     )
     files = [ctx.outputs.executable, formatter] + srcs + deps
@@ -33,7 +39,7 @@ google_java_format_test = rule(
     implementation = _google_java_format_test_impl,
     test = True,
     attrs = {
-        "_formatter": attr.label(allow_single_file=True, default = Label("@google_java_format//jar")),
+        "_formatter": attr.label(allow_single_file = True, default = Label("@google_java_format//jar")),
         "opts": attr.string_list(),
         "string_opts": attr.string_dict(),
         "srcs": attr.label_list(allow_files = True),

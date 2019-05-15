@@ -11,7 +11,6 @@ workspace(name = "io_machinecode_tools")
 # Archives
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 load("//imports:format_repositories.bzl", "format_repositories")
 
 format_repositories()
@@ -24,11 +23,14 @@ load("//imports:go_repositories.bzl", "go_repositories")
 
 go_repositories()
 
-load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
+load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
+
 go_rules_dependencies()
+
 go_register_toolchains()
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
 gazelle_dependencies()
 
 load("//imports:nodejs_repositories.bzl", "nodejs_repositories")
