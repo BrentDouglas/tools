@@ -92,7 +92,7 @@ def _karma_test_impl(ctx):
     )
 
     # Finally we load the user's srcs and deps
-    user_entries = ["%s/%s" % (ctx.workspace_name, f.short_path) for f in (depset([shim]) + files)]
+    user_entries = ["%s/%s" % (ctx.workspace_name, f.short_path) for f in (depset(transitive = [depset([shim]), files]))]
     config_segments = len(conf.short_path.split("/"))
 
     ctx.actions.expand_template(
