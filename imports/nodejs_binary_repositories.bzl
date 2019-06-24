@@ -1,10 +1,9 @@
 load("@build_bazel_rules_nodejs//:defs.bzl", "check_bazel_version", "node_repositories")
 
 def nodejs_binary_repositories(
-        node_version = "11.9.0",
-        yarn_version = "1.15.2",
-        bazel_version = "0.24.0"):
-
+        node_version = "12.4.0",
+        yarn_version = "1.17.2",
+        bazel_version = "0.27.0"):
     check_bazel_version(bazel_version)
 
     node_repositories(
@@ -12,17 +11,17 @@ def nodejs_binary_repositories(
             "%s-darwin_amd64" % node_version: (
                 "node-v%s-darwin-x64.tar.gz" % node_version,
                 "node-v%s-darwin-x64" % node_version,
-                "5d6b84d2b0fd6afee07c371bc815a9e4b6671b85bedcb38815310bd0f884d399",
+                "aaff97d59cda775165ef966ae74e70f55f3267e86d735ed3740ae9bf1d40531e",
             ),
             "%s-linux_amd64" % node_version: (
                 "node-v%s-linux-x64.tar.gz" % node_version,
                 "node-v%s-linux-x64" % node_version,
-                "0e872c288724e7de72eaa89d1fbc29979a60cdc8c4c0bc1ea65339328bbaaf4c",
+                "9a16909157e68d4e409a73b008994ed05b4b6bc952b65ffa7fbc5abb973d31e9",
             ),
             "%s-windows_amd64" % node_version: (
                 "node-v%s-win-x64.zip" % node_version,
                 "node-v%s-win-x64" % node_version,
-                "985e4edc758cb5f77f85cddda0155616b92f163b8d3842c542b1c8a395068499",
+                "ec8623e2528a35d3219200308e7ed41e24d4f7cd96530a4e6ac2513e44f7fad1",
             ),
         },
         node_urls = [
@@ -35,7 +34,7 @@ def nodejs_binary_repositories(
             yarn_version: (
                 "yarn-v%s.tar.gz" % yarn_version,
                 "yarn-v%s" % yarn_version,
-                "c4feca9ba5d6bf1e820e8828609d3de733edf0e4722d17ed7ce493ed39f61abd",
+                "1cb4eb5b30adcb995198e4ff95f344d3404116b1d2bd77323a6f22dd52596fd7",
             ),
         },
         yarn_urls = [

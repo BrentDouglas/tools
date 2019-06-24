@@ -172,7 +172,7 @@ def _pkg_app_impl(ctx):
     mv_img = []
     for i in range(0, len(ctx.attr.img)):
         attr = ctx.attr.img[i]
-        for file in attr.files:
+        for file in attr.files.to_list():
             path = get_path(ctx, attr, file)
             if path.startswith("img/"):
                 path = path[len("img/"):]
@@ -180,7 +180,7 @@ def _pkg_app_impl(ctx):
     mv_data = []
     for i in range(0, len(ctx.attr.data)):
         attr = ctx.attr.data[i]
-        for file in attr.files:
+        for file in attr.files.to_list():
             path = get_path(ctx, attr, file)
             mv_data.append("mkdir -p $(dirname $p/tar/%s) && cp %s $p/tar/%s" % (path, file.path, path))
     mv_icons = ["cp %s $p/tar/icons/%s" % (file.path, file.basename) for file in ctx.files.icons]

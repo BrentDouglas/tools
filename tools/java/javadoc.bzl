@@ -20,7 +20,7 @@ def _impl(ctx):
     for l in ctx.attr.libs:
         source_jars = depset(transitive = [source_jars, l.java.source_jars])
         transitive_jars = depset(transitive = [transitive_jars, l.java.transitive_deps])
-    transitive_jar_paths = [j.path for j in transitive_jars]
+    transitive_jar_paths = [j.path for j in transitive_jars.to_list()]
     dir = ctx.outputs.zip.path + ".dir"
     source = ctx.outputs.zip.path + ".source"
     external_docs = ["http://docs.oracle.com/javase/8/docs/api"] + ctx.attr.external_docs
@@ -29,7 +29,7 @@ def _impl(ctx):
         "export TZ",
         "rm -rf %s" % source,
         "mkdir %s" % source,
-        " && ".join(["unzip -qud %s %s" % (source, j.path) for j in source_jars]),
+        " && ".join(["unzip -qud %s %s" % (source, j.path) for j in source_jars.to_list()]),
         "rm -rf %s" % dir,
         "mkdir %s" % dir,
         " \\\n        ".join([
@@ -51,7 +51,7 @@ def _impl(ctx):
         "(cd %s && zip -Xqr ../%s *)" % (dir, ctx.outputs.zip.basename),
     ]
     ctx.actions.run_shell(
-        inputs = list(transitive_jars) + list(source_jars) + ctx.files._jdk,
+        inputs = transitive_jars.to_list() + source_jars.to_list() + ctx.files._jdk,
         outputs = [zip_output],
         command = " \\\n  && ".join(cmd),
     )

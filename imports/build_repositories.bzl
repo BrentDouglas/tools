@@ -28,12 +28,12 @@ def build_repositories(
     )
     npm_archive(
         name = "typescript",
-        version = "3.4.3",
+        version = "3.5.2",
         types = False,
     )
     npm_archive(
         name = "tslint",
-        version = "5.15.0",
+        version = "5.18.0",
         types = False,
     )
     npm_archive(
@@ -49,7 +49,7 @@ def build_repositories(
     npm_archive(
         name = "uglify-js",
         types = False,
-        version = "3.4.5",
+        version = "3.6.0",
     )
 
     #  npm_archive(
@@ -69,7 +69,7 @@ def build_repositories(
     )
     npm_archive(
         name = "node-sass",
-        version = "4.11.0",
+        version = "4.12.0",
         types = False,
         rebuild = True,
     )

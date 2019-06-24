@@ -143,7 +143,7 @@ def _npm_combine_impl(ctx):
     moves = []
     for dep in ctx.attr.deps:
       label = dep.label
-      for x in dep.files:
+      for x in dep.files.to_list():
         if is_any_jar(x.path):
           moves.append("jar xf $p/%s" % x.path)
         else:
