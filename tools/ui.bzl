@@ -39,7 +39,7 @@ def extract_module(path):
 def extract_all_modules(ctx, deps):
     ret = []
     for dep in deps:
-        for file in dep.files:
+        for file in dep.files.to_list():
             ret.append(extract_module(file.path))
     return ret
 
@@ -47,8 +47,8 @@ def _process_tuple(ctx, paths, outputs, cmds, dir):
     vals = paths[dir]
     if not len(vals):
         return
-    js = ctx.new_file(dir + "export.js")
-    dts = ctx.new_file(dir + "export.d.ts")
+    js = ctx.actions.declare_file(dir + "export.js")
+    dts = ctx.actions.declare_file(dir + "export.d.ts")
     outputs.append(js)
     outputs.append(dts)
 
@@ -107,7 +107,7 @@ def _export_packages_impl(ctx):
     for package in packages:
         _process_tuple(ctx, paths, outputs, cmds, package)
 
-    cmd_file = ctx.new_file(ctx.label.name + "-exports-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-exports-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = " \\\n  && ".join(cmds),
@@ -207,7 +207,7 @@ def _pkg_app_impl(ctx):
         ['( cd $p/tar/ && tar "cf${TAR_LINK_OPT}" - . > $p/%s )' % ctx.outputs.tar.path],
     )
     outs = [ctx.outputs.tar]
-    cmd_file = ctx.new_file(ctx.label.name + "-pkg-app-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-pkg-app-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,

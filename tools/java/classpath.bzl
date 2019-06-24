@@ -24,7 +24,7 @@ def _add_classpath_impl(ctx):
       "jar umf MANIFEST.MF %s" % (out_jar.path),
     ])
     outs = [out_jar]
-    ctx.action(
+    ctx.actions.run_shell(
         inputs=[in_jar] + deps,
         outputs=outs,
         arguments=[],

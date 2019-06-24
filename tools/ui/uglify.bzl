@@ -41,14 +41,15 @@ def _uglify_library_impl(ctx):
         "export NODE_PATH=$p/node_modules",
         uglify,
     ])
-    cmd_file = ctx.new_file(ctx.label.name + "-uglify-library-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-uglify-library-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, cmd_file, ctx.file._uglify] + ctx.files.srcs,
+        inputs = [cmd_file, ctx.file._uglify] + ctx.files.srcs,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

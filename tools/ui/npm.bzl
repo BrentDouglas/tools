@@ -102,7 +102,7 @@ def _npm_filegroup_impl(ctx):
     outputs = []
     moves = []
     for x in ctx.attr.include:
-        out = ctx.new_file(ctx.attr.include[x])
+        out = ctx.actions.declare_file(ctx.attr.include[x])
         outputs.append(out)
         moves.append("cp %s $p/%s" % (x, out.path))
     cmd = " \\\n  && ".join([
@@ -113,7 +113,7 @@ def _npm_filegroup_impl(ctx):
       "cd %s" % (dest_dir),
       "jar xf $p/%s" % (ctx.file.archive.path),
     ] + moves)
-    ctx.action(
+    ctx.actions.run_shell(
         inputs=[ctx.file.archive],
         outputs=outputs,
         command=cmd
@@ -157,7 +157,7 @@ def _npm_combine_impl(ctx):
     ] + moves + [
       "jar cfM $p/%s ." % (ctx.outputs.dest.path),
     ])
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = ctx.files.deps,
         outputs = [ctx.outputs.dest],
         command = cmd
@@ -186,8 +186,8 @@ def _npm_package_impl(ctx):
     if ctx.attr.package:
         pkg = ctx.file.package
     else:
-        pkg = ctx.new_file(package_name + "/package.json")
-        ctx.file_action(
+        pkg = ctx.actions.declare_file(package_name + "/package.json")
+        ctx.actions.write(
             pkg,
             "{\n" + join_list("    ", [
                '"name": "%s"' % package_name,
@@ -218,10 +218,10 @@ def _npm_package_impl(ctx):
         )
     if package_name.startswith('@types/'):
         tar_dir = '@types/'
-        out = ctx.new_file(package_name.replace(tar_dir, "") + "-types.tgz")
+        out = ctx.actions.declare_file(package_name.replace(tar_dir, "") + "-types.tgz")
     else:
         tar_dir = package_name
-        out = ctx.new_file(package_name + ".tgz")
+        out = ctx.actions.declare_file(package_name + ".tgz")
     mvs = []
     for attr in ctx.attr.srcs:
       for file in attr.files:
@@ -237,7 +237,7 @@ def _npm_package_impl(ctx):
       'if [ $(uname) == "Darwin" ] ; then export TAR_LINK_OPT="L" else export TAR_LINK_OPT="H"; fi',
       "tar cfz${TAR_LINK_OPT} - ./%s > %s" % (tar_dir, out.path),
     ])
-    cmd_file = ctx.new_file(ctx.label.name + "-npm-pkg-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-npm-pkg-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd

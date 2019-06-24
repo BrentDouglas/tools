@@ -91,7 +91,7 @@ def _html_minifier_library_impl(ctx):
     node.append("-o %s" % dest.path)
     node.extend([src.path for src in srcs])
 
-    inputs = [ctx.file._node, html_minifier]
+    inputs = [html_minifier]
 
     cmd = " \\\n  && ".join(
         [
@@ -106,6 +106,7 @@ def _html_minifier_library_impl(ctx):
     ctx.actions.run_shell(
         inputs = inputs + srcs + deps,
         outputs = [dest],
+        tools = [ctx.file._node],
         command = cmd,
     )
     return struct(files = depset([dest]))

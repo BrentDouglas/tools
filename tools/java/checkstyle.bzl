@@ -34,10 +34,10 @@ def _checkstyle_test_impl(ctx):
         [x.path for x in srcs],
     )
 
-    ctx.file_action(
+    ctx.actions.write(
         output = ctx.outputs.executable,
         content = cmd,
-        executable = True,
+        is_executable = True,
     )
     files = [ctx.outputs.executable] + ctx.files.data + srcs + deps + ctx.files._classpath + inputs
     runfiles = ctx.runfiles(

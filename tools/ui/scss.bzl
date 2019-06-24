@@ -34,7 +34,7 @@ def _scss_library_impl(ctx):
         ["--%s %s" % (k, sopts[k]) for k in sopts],
     )
 
-    files = [(x, ctx.new_file(x.basename[:-5] + ".css")) for x in entry]
+    files = [(x, ctx.actions.declare_file(x.basename[:-5] + ".css")) for x in entry]
 
     cmd = " \\\n  && ".join([
         "export PATH",
@@ -48,8 +48,9 @@ def _scss_library_impl(ctx):
     ])
     tmp_files = [x[1] for x in files]
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, scss] + entry + srcs + deps,
+        inputs = [scss] + entry + srcs + deps,
         outputs = tmp_files,
+        tools = [ctx.file._node],
         command = cmd,
     )
     return concat(

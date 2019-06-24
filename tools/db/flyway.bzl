@@ -6,7 +6,7 @@ def _flyway_clean_impl(ctx):
     schema = ctx.file.schema
     version = ctx.outputs.version
     base = ctx.genfiles_dir.path
-    config = ctx.new_file(base + "/flyway-clean.conf")
+    config = ctx.actions.declare_file(base + "/flyway-clean.conf")
 
     classpath = ""
     add = False
@@ -76,10 +76,9 @@ def _flyway_clean_impl(ctx):
         directory = directory,
         hash_args = hash_args,
     )
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = inputs + ctx.files.migrations + ctx.files.deps + ctx.files._classpath,
         outputs = [config, version],
-        arguments = [],
         command = command,
     )
     return struct(file = version)
@@ -93,14 +92,14 @@ flyway_clean = rule(
             Label("@gnu_getopt_java_getopt//jar"),
             Label("//src/main/java/io/machinecode/tools/sql"),
         ]),
-        "config": attr.label(allow_files = True, single_file = True),
+        "config": attr.label(allow_single_file = True),
         "url": attr.string(),
         "username": attr.string(),
         "password": attr.string(),
         "deps": attr.label_list(),
         "migrations": attr.label_list(),
-        "schema": attr.label(allow_files = True, single_file = True),
-        "schema_version": attr.label(allow_files = True, single_file = True),
+        "schema": attr.label(allow_single_file = True),
+        "schema_version": attr.label(allow_single_file = True),
     },
     outputs = {
         "version": "%{name}.txt",
@@ -114,8 +113,8 @@ def _flyway_migrate_impl(ctx):
     template = ctx.file.config
     version = ctx.outputs.version
     base = ctx.genfiles_dir.path
-    config = ctx.new_file(base + "/flyway-migrate.conf")
-    migration_version = ctx.new_file(base + "/flyway_migration_number.txt")
+    config = ctx.actions.declare_file(base + "/flyway-migrate.conf")
+    migration_version = ctx.actions.declare_file(base + "/flyway_migration_number.txt")
     classpath = ""
     add = False
     directory = None
@@ -165,10 +164,9 @@ def _flyway_migrate_impl(ctx):
         migration_version = migration_version.path,
         schema_version = ctx.file.schema_version.path,
     )
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = [template, ctx.file.schema_version] + ctx.files.migrations + ctx.files.deps + ctx.files.classpath,
         outputs = [config, migration_version, version],
-        arguments = [],
         command = command,
     )
     return struct(file = version)
@@ -182,7 +180,7 @@ flyway_migrate = rule(
             Label("@gnu_getopt_java_getopt//jar"),
             Label("//src/main/java/io/machinecode/tools/sql"),
         ]),
-        "config": attr.label(allow_files = True, single_file = True),
+        "config": attr.label(allow_single_file = True),
         "url": attr.string(),
         "username": attr.string(),
         "password": attr.string(),
@@ -190,7 +188,7 @@ flyway_migrate = rule(
         "deps": attr.label_list(),
         "migrations": attr.label_list(),
         "history_table": attr.string(default = "flyway_schema_history"),
-        "schema_version": attr.label(allow_files = True, single_file = True),
+        "schema_version": attr.label(allow_single_file = True),
     },
     outputs = {
         "version": "%{name}.txt",
@@ -239,10 +237,9 @@ def _flyway_after_migrate_impl(ctx):
         username = ctx.attr.username,
         password = ctx.attr.password,
     )
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = [ctx.file.schema_version] + ctx.files.migrations + ctx.files.deps + ctx.files.classpath,
         outputs = [ctx.outputs.version],
-        arguments = [],
         command = command,
     )
     return struct(file = ctx.outputs.version)
@@ -260,7 +257,7 @@ flyway_after_migrate = rule(
         "password": attr.string(),
         "deps": attr.label_list(),
         "migrations": attr.label_list(),
-        "schema_version": attr.label(allow_files = True, single_file = True),
+        "schema_version": attr.label(allow_single_file = True),
     },
     outputs = {
         "version": "%{name}.txt",

@@ -142,8 +142,7 @@ template_file = rule(
     attrs = {
         "src": attr.label(
             mandatory = True,
-            allow_files = True,
-            single_file = True,
+            allow_single_file = True,
         ),
         "substitutions": attr.string_dict(mandatory = True),
         "out": attr.output(mandatory = True),
@@ -157,7 +156,7 @@ def _move_impl(ctx):
         "mkdir -p %s" % ctx.outputs.dest.dirname,
         "cp %s %s" % (ctx.file.src.path, ctx.outputs.dest.path),
     ])
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = [ctx.file.src],
         outputs = [ctx.outputs.dest],
         command = cmd,
@@ -192,7 +191,7 @@ def _move_up_impl(ctx):
         attr = ctx.attr.srcs[i]
         for file in attr.files:
             path = get_path(ctx, attr, file)
-            out = ctx.new_file(path[len(dirs):])
+            out = ctx.actions.declare_file(path[len(dirs):])
             outs.append(out)
             moves += [
                 "mkdir -p %s" % out.dirname,
@@ -202,7 +201,7 @@ def _move_up_impl(ctx):
         "export PATH",
         "p=$PWD",
     ] + moves)
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = ctx.files.srcs,
         outputs = outs,
         command = cmd,
@@ -240,7 +239,7 @@ def _move_down_impl(ctx):
         attr = ctx.attr.srcs[i]
         for file in attr.files:
             path = get_path(ctx, attr, file)
-            out = ctx.new_file(dirs + path)
+            out = ctx.actions.declare_file(dirs + path)
             outs.append(out)
             moves += [
                 "mkdir -p %s" % out.dirname,
@@ -250,7 +249,7 @@ def _move_down_impl(ctx):
         "export PATH",
         "p=$PWD",
     ] + moves)
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = ctx.files.srcs,
         outputs = outs,
         command = cmd,
@@ -398,7 +397,7 @@ def _dirname_impl(ctx):
         attr = ctx.attr.srcs[i]
         for file in attr.files:
             path = get_path(ctx, attr, file)
-            out = ctx.new_file(path)
+            out = ctx.actions.declare_file(path)
             outputs.append(out)
             ctx.template_action(
                 template = file,
@@ -439,7 +438,7 @@ def _template_content_impl(ctx):
         """CONTENT="$(cat %s)" """ % template.path,
         """echo "${CONTENT/%s/$(cat %s)}" > %s""" % (ctx.attr.token, data.path, output.path),
     ])
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = [template, data],
         outputs = [output],
         command = cmd,
@@ -477,7 +476,7 @@ def _base_64_impl(ctx):
         "p=$PWD",
         """base64 -i %s | tr -d '\n' > %s""" % (src.path, output.path),
     ])
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = [src],
         outputs = [output],
         command = cmd,
@@ -509,7 +508,7 @@ def _get_class_list_impl(ctx):
     ])
     for file in ctx.files.deps:
         cmd += """ \\\n  && (jar tf $p/%s | grep '\.class$' | sed 's:\\/:.:g' | sed 's:\.class$::') >> %s""" % (file.path, dest.path)
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = deps,
         outputs = [dest],
         command = cmd,
@@ -566,32 +565,32 @@ def _to_tar_impl(ctx):
     outs = []
     for file in srcs:
         if is_jar(file.path):
-            out = ctx.new_file(file.basename[:4] + ext)
+            out = ctx.actions.declare_file(file.basename[:4] + ext)
             outs.append(out)
             cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
         if is_srcjar(file.path):
-            out = ctx.new_file(file.basename[:7] + ext)
+            out = ctx.actions.declare_file(file.basename[:7] + ext)
             outs.append(out)
             cmd += _repack_archive("jar xf", tar, dir, file.path, out.path)
         if is_zip(file.path):
-            out = ctx.new_file(file.basename[:4] + ext)
+            out = ctx.actions.declare_file(file.basename[:4] + ext)
             outs.append(out)
             cmd += _repack_archive("unzip", tar, dir, file.path, out.path)
         if is_tar(file.path):
-            out = ctx.new_file(file.basename[:4] + ext)
+            out = ctx.actions.declare_file(file.basename[:4] + ext)
             outs.append(out)
             cmd += _repack_archive("tar xf", tar, dir, file.path, out.path)
         if is_tgz(file.path):
             n = 4 if file.path.endswith(".tgz") else 7
-            out = ctx.new_file(file.basename[:n] + ext)
+            out = ctx.actions.declare_file(file.basename[:n] + ext)
             outs.append(out)
             cmd += _repack_archive("tar zxf", tar, dir, file.path, out.path)
         if is_tbz(file.path):
             n = 7 if file.path.endswith(".tar.bz2") else 9
-            out = ctx.new_file(file.basename[:n] + ext)
+            out = ctx.actions.declare_file(file.basename[:n] + ext)
             outs.append(out)
             cmd += _repack_archive("tar jxf", tar, dir, file.path, out.path)
-    ctx.action(
+    ctx.actions.run_shell(
         inputs = srcs,
         outputs = outs,
         command = cmd,

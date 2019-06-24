@@ -139,52 +139,52 @@ def _typescript_library_impl(ctx):
         dest_dir = base + "/" + pkg
     is_preserve = sopts.get("jsx") == "preserve"
     if (not sopts.get("module") or sopts.get("module") in ["amd", "systemjs"]) and dest:
-        out_file = ctx.new_file(dest)
+        out_file = ctx.actions.declare_file(dest)
         tsc += " --outFile %s" % out_file.path
         outs.append(out_file)
         out_js.append(out_file)
         if is_source_map:
-            map = ctx.new_file(dest + ".map")
+            map = ctx.actions.declare_file(dest + ".map")
             outs.append(map)
             out_js_map.append(map)
         if is_tsd:
-            dts = ctx.new_file(dest[:-3] + ".d.ts")
+            dts = ctx.actions.declare_file(dest[:-3] + ".d.ts")
             outs.append(dts)
             out_dts.append(dts)
     else:
         tsc += " --outDir %s" % dest_dir
         for attr in ctx.attr.srcs:
-            for file in attr.files:
+            for file in attr.files.to_list():
                 path = get_path(ctx, attr, file)
                 if path.endswith(".ts") and not path.endswith(".d.ts"):
                     out = path[:-3]
-                    out_file = ctx.new_file(out + ".js")
+                    out_file = ctx.actions.declare_file(out + ".js")
                     outs.append(out_file)
                     out_js.append(out_file)
                     if is_source_map:
-                        map = ctx.new_file(out + ".map")
+                        map = ctx.actions.declare_file(out + ".map")
                         outs.append(map)
                         out_js_map.append(map)
                     if is_tsd:
-                        dts = ctx.new_file(out + ".d.ts")
+                        dts = ctx.actions.declare_file(out + ".d.ts")
                         outs.append(dts)
                         out_dts.append(dts)
                 elif path.endswith(".tsx"):
                     ext = ".jsx" if is_preserve else ".js"
                     out = path[:-4]
-                    out_file = ctx.new_file(out + ext)
+                    out_file = ctx.actions.declare_file(out + ext)
                     outs.append(out_file)
                     out_js.append(out_file)
                     if is_source_map:
-                        map = ctx.new_file(out + ext + ".map")
+                        map = ctx.actions.declare_file(out + ext + ".map")
                         outs.append(map)
                         out_js_map.append(map)
                     if is_tsd:
-                        dts = ctx.new_file(out + ext + ".d.ts")
+                        dts = ctx.actions.declare_file(out + ext + ".d.ts")
                         outs.append(dts)
                         out_dts.append(dts)
                 if is_any_jar(path) and not out_jar:
-                    out_jar = ctx.new_file(ctx.label.name + ".jar")
+                    out_jar = ctx.actions.declare_file(ctx.label.name + ".jar")
                     outs.append(out_jar)
 
     if ctx.attr.debug == "rule":
@@ -226,14 +226,15 @@ def _typescript_library_impl(ctx):
                 cmds.append(""""(cd $p/%s && jar tf $p/%s | grep -v '\.d.ts$' | grep -E '\.ts$' | sed -E 's/\.ts$/.map/' ) >> classes.list""" % (pkg, j.path))
         cmds.append("cd $p/%s && jar cfM $p/%s @$p/classes.list" % (dest_dir, out_jar.path))
 
-    cmd_file = ctx.new_file(ctx.label.name + "-tsc-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-tsc-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = " \\\n  && ".join(cmds),
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, ctx.file._tsc, cmd_file] + ctx.files.srcs + in_all,
+        inputs = [ctx.file._tsc, cmd_file] + ctx.files.srcs + in_all,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(
@@ -303,7 +304,7 @@ def _ts_compress_html_impl(ctx):
     base = ctx.bin_dir.path
     pkg = ctx.label.package
 
-    files = [(x, ctx.new_file(strip_base(x.path, base, pkg))) for x in srcs]
+    files = [(x, ctx.actions.declare_file(strip_base(x.path, base, pkg))) for x in srcs]
 
     cmd = " \\\n  && ".join(
         [
@@ -312,7 +313,7 @@ def _ts_compress_html_impl(ctx):
         ] + ["python3 %s -i %s -o %s" % (compress.path, x[0].path, x[1].path) for x in files],
     )
     outputs = [x[1] for x in files]
-    cmd_file = ctx.new_file(ctx.label.name + "-ts-html-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-ts-html-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,

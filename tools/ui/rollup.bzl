@@ -41,7 +41,7 @@ def _rollup_library_impl(ctx):
     node.extend(["-i %s" % src.path for src in srcs])
     node.append("-o %s" % dest.path)
 
-    inputs = [ctx.file._node, rollup]
+    inputs = [rollup]
     if cfg:
         inputs.append(cfg)
         node.append("--config %s" % cfg.path)
@@ -59,6 +59,7 @@ def _rollup_library_impl(ctx):
     ctx.actions.run_shell(
         inputs = inputs + srcs + deps,
         outputs = [dest],
+        tools = [ctx.file._node],
         command = cmd,
     )
     return struct(files = depset([dest]))

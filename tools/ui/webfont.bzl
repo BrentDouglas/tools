@@ -21,7 +21,7 @@ def _webfont_library_impl(ctx):
     gen_base = ctx.genfiles_dir.path
     opts = ctx.attr.opts
     sopts = ctx.attr.string_opts
-    outs = [ctx.new_file(x) for x in ctx.attr.outs]
+    outs = [ctx.actions.declare_file(x) for x in ctx.attr.outs]
     srcs = ctx.files.srcs
     deps = ctx.files.deps
     template = ctx.file.template
@@ -48,14 +48,15 @@ def _webfont_library_impl(ctx):
             node,
         ],
     )
-    cmd_file = ctx.new_file(ctx.label.name + "-webfont-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-webfont-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, ctx.file._webfont, template, cmd_file] + srcs + deps,
+        inputs = [ctx.file._webfont, template, cmd_file] + srcs + deps,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

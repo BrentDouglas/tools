@@ -44,15 +44,16 @@ def _stylus_library_impl(ctx):
         ],
     )
     outs = [dest]
-    cmd_file = ctx.new_file(ctx.label.name + "-stylus-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-stylus-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
     )
     outs = [dest]
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, ctx.file._stylus, cmd_file] + srcs + deps,
+        inputs = [ctx.file._stylus, cmd_file] + srcs + deps,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

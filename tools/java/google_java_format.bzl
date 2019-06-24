@@ -20,10 +20,10 @@ def _google_java_format_test_impl(ctx):
         cmds.append(cmd)
     cmds.append("exit ${RETVAL}")
 
-    ctx.file_action(
+    ctx.actions.write(
         output = ctx.outputs.executable,
         content = " \\\n ; ".join(cmds),
-        executable = True,
+        is_executable = True,
     )
     files = [ctx.outputs.executable, formatter] + srcs + deps
     runfiles = ctx.runfiles(

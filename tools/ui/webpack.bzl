@@ -63,8 +63,9 @@ def _webpack_compile_impl(ctx):
         ["%s --devtool inline-source-map %s %s" % (node, entry, dest.path)],
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, webpack, source_map_loader] + srcs + deps,
+        inputs = [webpack, source_map_loader] + srcs + deps,
         outputs = [dest],
+        tools = [ctx.file._node],
         command = cmd,
     )
     return struct(files = depset([dest]))

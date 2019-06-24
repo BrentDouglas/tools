@@ -47,15 +47,16 @@ def _closure_library_impl(ctx):
     )
 
     outputs = [dest] + ([map] if map else [])
-    cmd_file = ctx.new_file(ctx.label.name + "closure-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "closure-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
         is_executable = True,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, cmd_file] + srcs + deps + [ctx.file._closure],
+        inputs = [cmd_file] + srcs + deps + [ctx.file._closure],
         outputs = outputs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(

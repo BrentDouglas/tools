@@ -2,7 +2,7 @@
 def _java_jooq_library_impl(ctx):
     template = ctx.file.config
     base = ctx.genfiles_dir.path
-    config = ctx.new_file(base + "/jooq.xml")
+    config = ctx.actions.declare_file(base + "/jooq.xml")
     args = []
     classpath=""
     add=False
@@ -32,7 +32,7 @@ def _java_jooq_library_impl(ctx):
                         username=ctx.attr.username,
                         password=ctx.attr.password,
                     )
-    ctx.action(
+    ctx.actions.run_shell(
         inputs=[template, ctx.file.version] + ctx.files.deps + ctx.files._classpath,
         outputs=[config, ctx.outputs.jar],
         arguments=args,
@@ -49,12 +49,12 @@ java_jooq_library = rule(
             Label("@org_jooq_jooq_codegen//jar"),
             Label("@org_jooq_jooq_meta//jar"),
         ]),
-        "config": attr.label(allow_files=True, single_file=True),
+        "config": attr.label(allow_single_file=True),
         "url": attr.string(),
         "username": attr.string(),
         "password": attr.string(),
         "deps": attr.label_list(),
-        "version": attr.label(allow_files=True, single_file=True),
+        "version": attr.label(allow_single_file=True),
     },
     outputs = {
         "jar": "%{name}.srcjar"

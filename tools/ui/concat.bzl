@@ -61,16 +61,17 @@ def concat(ctx, refs, maps, inline, strip, srcs, dest, concat, sourcemaps):
     if inline:
         outs = [dest]
     else:
-        outs = [dest, ctx.new_file(dest.basename + ".map")]
+        outs = [dest, ctx.actions.declare_file(dest.basename + ".map")]
 
-    cmd_file = ctx.new_file(ctx.label.name + "-concat-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-concat-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd + " \\\n  && " + run,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, ctx.file._concat, ctx.file._sourcemaps, cmd_file] + srcs,
+        inputs = [ctx.file._concat, ctx.file._sourcemaps, cmd_file] + srcs,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

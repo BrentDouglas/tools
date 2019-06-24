@@ -58,15 +58,16 @@ def _type_definition_library_impl(ctx):
         [_process_file(file, base_dir) for file in filter_filetypes(dts_filetype, srcs)] +
         [node],
     )
-    cmd_file = ctx.new_file(ctx.label.name + "-dts-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-dts-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
     )
     outs = [dest]
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, dts_bundle, cmd_file] + srcs + deps,
+        inputs = [dts_bundle, cmd_file] + srcs + deps,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

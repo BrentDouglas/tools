@@ -38,14 +38,15 @@ def _csso_library_impl(ctx):
         compress,
     ])
     outs = [dest]
-    cmd_file = ctx.new_file(ctx.label.name + "-csso-cmd")
+    cmd_file = ctx.actions.declare_file(ctx.label.name + "-csso-cmd")
     ctx.actions.write(
         output = cmd_file,
         content = cmd,
     )
     ctx.actions.run_shell(
-        inputs = [ctx.file._node, cmd_file, compressor] + srcs,
+        inputs = [cmd_file, compressor] + srcs,
         outputs = outs,
+        tools = [ctx.file._node],
         command = "bash %s" % cmd_file.path,
     )
     return struct(files = depset(outs))

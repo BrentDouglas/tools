@@ -14,7 +14,7 @@ def _xsd_library_impl(ctx):
         target=name,
     )
     outs = [ctx.outputs.jar]
-    ctx.action(
+    ctx.actions.run_shell(
         inputs=[schema],
         outputs=outs,
         arguments=[],
