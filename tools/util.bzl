@@ -312,7 +312,7 @@ def _find_impl(ctx):
     target = ctx.attr.file
     files = "\n"
     for src in ctx.attr.srcs:
-        for file in src.files:
+        for file in src.files.to_list():
             path = get_path(ctx, src, file)
             if path == target if ctx.attr.path else file.basename == target:
                 return struct(
