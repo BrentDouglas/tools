@@ -1,4 +1,3 @@
-load("//tools/java:maven_jar.bzl", "maven_jar")
 load("//tools/ui:npm.bzl", "npm_archive")
 
 def npm_repositories():

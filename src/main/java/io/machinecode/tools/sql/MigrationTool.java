@@ -16,17 +16,20 @@
  */
 package io.machinecode.tools.sql;
 
+import static java.lang.System.out;
+
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.logging.LogFactory;
-import org.flywaydb.core.internal.logging.console.ConsoleLog;
-import org.flywaydb.core.internal.logging.console.ConsoleLogCreator;
-
 import java.io.FileInputStream;
 import java.util.Properties;
-
-import static java.lang.System.out;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.ClassicConfiguration;
+import org.flywaydb.core.api.logging.Log;
+import org.flywaydb.core.api.logging.LogCreator;
+import org.flywaydb.core.api.logging.LogFactory;
+import org.flywaydb.core.internal.logging.javautil.JavaUtilLog;
 
 /** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
 public class MigrationTool {
@@ -45,7 +48,7 @@ public class MigrationTool {
 
     String config = null;
     String op = null;
-    ConsoleLog.Level level = ConsoleLog.Level.WARN;
+    Level level = Level.WARNING;
 
     int c;
     while ((c = opt.getopt()) != -1) {
@@ -59,10 +62,10 @@ public class MigrationTool {
         case 'l':
           switch (opt.getOptarg().toLowerCase().charAt(0)) {
             case 'd':
-              level = ConsoleLog.Level.DEBUG;
+              level = Level.FINE;
               break;
             case 'i':
-              level = ConsoleLog.Level.INFO;
+              level = Level.INFO;
               break;
           }
           break;
@@ -78,11 +81,21 @@ public class MigrationTool {
       throw new RuntimeException("-o must be provided");
     }
 
-    LogFactory.setFallbackLogCreator(new ConsoleLogCreator(level));
-    final Flyway flyway = new Flyway();
+    final ClassicConfiguration configuration = new ClassicConfiguration();
     final Properties properties = new Properties();
     properties.load(new FileInputStream(config));
-    flyway.configure(properties);
+    configuration.configure(properties);
+    final Level finalLevel = level;
+    LogFactory.setFallbackLogCreator(
+        new LogCreator() {
+          @Override
+          public Log createLogger(final Class<?> clazz) {
+            final Logger log = Logger.getLogger(clazz.getName());
+            log.setLevel(finalLevel);
+            return new JavaUtilLog(log);
+          }
+        });
+    final Flyway flyway = new Flyway(configuration);
     if (op.startsWith("m")) {
       flyway.migrate();
     } else if (op.startsWith("c")) {

@@ -6,11 +6,11 @@ filegroup(
 )
 
 lib_deps = [
-    "@gnu_getopt_java_getopt//jar",
-    "@io_undertow_undertow_core//jar",
-    "@io_undertow_undertow_servlet//jar",
-    "@javax_servlet//jar",
-    "@org_jboss_xnio_xnio_api//jar",
+    "@devsrv_m2//:gnu_getopt_java_getopt",
+    "@devsrv_m2//:io_undertow_undertow_core",
+    "@devsrv_m2//:io_undertow_undertow_servlet",
+    "@devsrv_m2//:org_jboss_spec_javax_servlet_jboss_servlet_api_3_1_spec",
+    "@devsrv_m2//:org_jboss_xnio_xnio_api",
 ]
 
 java_library(
@@ -28,8 +28,8 @@ java_binary(
     ],
     main_class = "io.machinecode.tools.devsrv.Main",
     runtime_deps = [
-        "@org_jboss_logging_jboss_logging//jar",
-        "@org_jboss_xnio_xnio_nio//jar",
+        "@devsrv_m2//:org_jboss_logging_jboss_logging",
+        "@devsrv_m2//:org_jboss_xnio_xnio_nio",
     ],
     deps = lib_deps,
 )

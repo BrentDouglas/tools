@@ -1,5 +1,5 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("@io_bazel_skydoc//skylark:skylark.bzl", "skylark_doc")
+load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -8,17 +8,17 @@ bzl_library(
     srcs = glob(["**/*.bzl"]),
 )
 
-skylark_doc(
-    name = "docs",
-    srcs = [
-        ":rules",
-        "//tools/db",
-        "//tools/java",
-        "//tools/ui",
-    ],
-    format = "html",
-    site_root = "/rules",
-)
+#stardoc(
+#    name = "docs",
+#    srcs = [
+#        ":rules",
+#        "//tools/db",
+#        "//tools/java",
+#        "//tools/ui",
+#    ],
+#    format = "html",
+#    site_root = "/rules",
+#)
 
 filegroup(
     name = "watch",

@@ -88,9 +88,9 @@ flyway_clean = rule(
     output_to_genfiles = True,
     attrs = {
         "_classpath": attr.label_list(default = [
-            Label("@org_flywaydb_flyway_core//jar"),
-            Label("@gnu_getopt_java_getopt//jar"),
-            Label("//src/main/java/io/machinecode/tools/sql"),
+            Label("@sql_m2//:org_flywaydb_flyway_core"),
+            Label("@sql_m2//:gnu_getopt_java_getopt"),
+            Label("@io_machinecode_tools//src/main/java/io/machinecode/tools/sql"),
         ]),
         "config": attr.label(allow_single_file = True),
         "url": attr.string(),
@@ -176,9 +176,9 @@ flyway_migrate = rule(
     output_to_genfiles = True,
     attrs = {
         "classpath": attr.label_list(default = [
-            Label("@org_flywaydb_flyway_core//jar"),
-            Label("@gnu_getopt_java_getopt//jar"),
-            Label("//src/main/java/io/machinecode/tools/sql"),
+            Label("@sql_m2//:org_flywaydb_flyway_core"),
+            Label("@sql_m2//:gnu_getopt_java_getopt"),
+            Label("@io_machinecode_tools//src/main/java/io/machinecode/tools/sql"),
         ]),
         "config": attr.label(allow_single_file = True),
         "url": attr.string(),
@@ -249,8 +249,8 @@ flyway_after_migrate = rule(
     output_to_genfiles = True,
     attrs = {
         "classpath": attr.label_list(default = [
-            Label("@gnu_getopt_java_getopt//jar"),
-            Label("//src/main/java/io/machinecode/tools/sql"),
+            Label("@sql_m2//:gnu_getopt_java_getopt"),
+            Label("@io_machinecode_tools//src/main/java/io/machinecode/tools/sql"),
         ]),
         "url": attr.string(),
         "username": attr.string(),

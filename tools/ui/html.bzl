@@ -59,7 +59,7 @@ html_compressor_library = rule(
         "opts": attr.string_list(),
         "string_opts": attr.string_dict(),
         "_compressor": attr.label(
-            default = Label("@com_googlecode_htmlcompressor_htmlcompressor//jar"),
+            default = Label("@build_m2//:com_googlecode_htmlcompressor_htmlcompressor"),
             allow_single_file = True,
         ),
         "dest": attr.output(),

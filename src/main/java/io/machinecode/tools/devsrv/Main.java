@@ -26,10 +26,11 @@
  */
 package io.machinecode.tools.devsrv;
 
+import static java.lang.System.out;
+
 import com.sun.nio.file.SensitivityWatchEventModifier;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -51,8 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static java.lang.System.out;
 
 /** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
 public class Main {
@@ -277,16 +276,19 @@ public class Main {
         "        [-H|--host <host>]             The hostname or IP for the server to bind to.");
     out.println("        [-P|--port <port>]             The port for the server to bind to.");
     out.println(
-        "        [-C|--config <path>]           A .xml or .properties file to load system properties from.");
+        "        [-C|--config <path>]           A .xml or .properties file to load system"
+            + " properties from.");
     out.println("        [-d|--dir <dir>]               The directory to serve.");
     out.println(
-        "        [-k|--keystore <dir>]          The name of a keystore. If this is set we will listen using HTTPS.");
+        "        [-k|--keystore <dir>]          The name of a keystore. If this is set we will"
+            + " listen using HTTPS.");
     out.println(
         "        [-p|--proxy <prefix>=<url>]... A key value mapping of prefix to URL to proxy.");
     out.println();
     out.println("        [-w|--watch <dir>]             A directory to watch for changed.");
     out.println(
-        "        [-c|--command <cmd>]           A command to run if any content in the directories change.");
+        "        [-c|--command <cmd>]           A command to run if any content in the directories"
+            + " change.");
     out.println();
     out.println("        [-h|--help]                    Print this message and exit.");
     out.println();

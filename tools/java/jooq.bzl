@@ -45,9 +45,10 @@ java_jooq_library = rule(
     implementation = _java_jooq_library_impl,
     attrs = {
         "_classpath": attr.label_list(default=[
-            Label("@org_jooq_jooq//jar"),
-            Label("@org_jooq_jooq_codegen//jar"),
-            Label("@org_jooq_jooq_meta//jar"),
+            Label("@sql_m2//:org_jooq_jooq"),
+            Label("@sql_m2//:org_jooq_jooq_codegen"),
+            Label("@sql_m2//:org_jooq_jooq_meta"),
+            Label("@sql_m2//:org_reactivestreams_reactive_streams"),
         ]),
         "config": attr.label(allow_single_file=True),
         "url": attr.string(),

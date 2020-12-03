@@ -116,19 +116,19 @@ def java_grpc_library(
         flavor = flavor,
         enable_deprecated = enable_deprecated,
         java_plugin = select({
-            "//conditions:darwin": Label("@io_grpc_protoc_gen_grpc_java_osx//exe"),
-            "//conditions:windows": Label("@io_grpc_protoc_gen_grpc_java_windows//exe"),
-            "//conditions:default": Label("@io_grpc_protoc_gen_grpc_java_linux//exe"),
+            "//conditions:darwin": Label("@grpc_m2//io_grpc_protoc_gen_grpc_java_osx//exe"),
+            "//conditions:windows": Label("@grpc_m2//io_grpc_protoc_gen_grpc_java_windows//exe"),
+            "//conditions:default": Label("@grpc_m2//io_grpc_protoc_gen_grpc_java_linux//exe"),
         }),
         visibility = ["//visibility:private"],
         **kwargs
     )
 
     added_deps = [
-        "@io_grpc_grpc_core//jar",
-        "@io_grpc_grpc_stub//jar",
-        "@io_grpc_grpc_protobuf//jar",
-        "@com_google_guava_guava//jar",
+        "@grpc_m2//:io_grpc_grpc_core",
+        "@grpc_m2//:io_grpc_grpc_stub",
+        "@grpc_m2//:io_grpc_grpc_protobuf",
+        "@grpc_m2//:com_google_guava_guava",
     ]
     if flavor == "normal":
         added_deps += ["@com_google_protobuf//:protobuf_java"]
@@ -143,7 +143,7 @@ def java_grpc_library(
         srcs = [gensource_name],
         visibility = visibility,
         deps = [
-            "@com_google_code_findbugs_jsr305//jar",
+            "@grpc_m2//:com_google_code_findbugs_jsr305",
         ] + deps + added_deps,
         **kwargs
     )

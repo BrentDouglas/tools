@@ -1,13 +1,22 @@
-load("//tools/java:maven_jar.bzl", "maven_jar")
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("//:defs.bzl", "maven_repositories")
 
 def devsrv_repositories(
-        flyway_version = "5.2.1",
-        getopt_version = "1.0.13"):
-    maven_jar(
-        name = "org_flywaydb_flyway_core",
-        artifact = "org.flywaydb:flyway-core:" + flyway_version,
-    )
-    maven_jar(
-        name = "gnu_getopt_java_getopt",
-        artifact = "gnu.getopt:java-getopt:" + getopt_version,
+        getopt_version = "1.0.13",
+        undertow_version = "1.4.22.Final",
+        xnio_version = "3.3.8.Final",
+        java_servlet_version = "1.0.0.Final",
+        jboss_logging_version = "3.2.1.Final"):
+    maven_install(
+        name = "devsrv_m2",
+        repositories = maven_repositories,
+        artifacts = [
+            "gnu.getopt:java-getopt:" + getopt_version,
+            "org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:" + java_servlet_version,
+            "org.jboss.logging:jboss-logging:" + jboss_logging_version,
+            "io.undertow:undertow-core:" + undertow_version,
+            "io.undertow:undertow-servlet:" + undertow_version,
+            "org.jboss.xnio:xnio-api:" + xnio_version,
+            "org.jboss.xnio:xnio-nio:" + xnio_version,
+        ],
     )

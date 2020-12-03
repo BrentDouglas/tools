@@ -17,9 +17,9 @@ def _impl(ctx):
     zip_output = ctx.outputs.zip
     transitive_jars = depset()
     source_jars = depset()
-    for l in ctx.attr.libs:
-        source_jars = depset(transitive = [source_jars, l.java.source_jars])
-        transitive_jars = depset(transitive = [transitive_jars, l.java.transitive_deps])
+    for lib in ctx.attr.libs:
+        source_jars = depset(transitive = [source_jars, depset(lib[JavaInfo].source_jars)])
+        transitive_jars = depset(transitive = [transitive_jars, depset(lib[JavaInfo].transitive_deps)])
     transitive_jar_paths = [j.path for j in transitive_jars.to_list()]
     dir = ctx.outputs.zip.path + ".dir"
     source = ctx.outputs.zip.path + ".source"

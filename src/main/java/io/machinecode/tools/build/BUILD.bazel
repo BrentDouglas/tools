@@ -12,8 +12,8 @@ java_binary(
     ],
     main_class = "io.machinecode.tools.build.Main",
     deps = [
-        "@gnu_getopt_java_getopt//jar",
-        "@org_antlr_st4//jar",
-        "@org_yaml_snakeyaml//jar",
+        "@template_m2//:gnu_getopt_java_getopt",
+        "@template_m2//:org_antlr_ST4",
+        "@template_m2//:org_yaml_snakeyaml",
     ],
 )

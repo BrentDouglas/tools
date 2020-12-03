@@ -28,13 +28,6 @@ package io.machinecode.tools.build;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.stringtemplate.v4.ST;
-import org.stringtemplate.v4.STGroup;
-import org.stringtemplate.v4.STGroupFile;
-import org.stringtemplate.v4.STWriter;
-import org.stringtemplate.v4.misc.ErrorBuffer;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -44,6 +37,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Map;
+import org.stringtemplate.v4.ST;
+import org.stringtemplate.v4.STGroup;
+import org.stringtemplate.v4.STGroupFile;
+import org.stringtemplate.v4.STWriter;
+import org.stringtemplate.v4.misc.ErrorBuffer;
+import org.yaml.snakeyaml.Yaml;
 
 /** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
 public class Main {

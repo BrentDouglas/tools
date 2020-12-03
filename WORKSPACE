@@ -11,19 +11,26 @@ workspace(name = "io_machinecode_tools")
 # Archives
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+load("//imports:java_repositories.bzl", "java_repositories")
+
+java_repositories()
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
 load("//imports:format_repositories.bzl", "format_repositories")
 
 format_repositories()
 
-load("//imports:skydoc_repositories.bzl", "skydoc_repositories")
+load("//imports:stardoc_repositories.bzl", "stardoc_repositories")
 
-skydoc_repositories()
+stardoc_repositories()
 
 load("//imports:go_repositories.bzl", "go_repositories")
 
 go_repositories()
 
-load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
@@ -48,13 +55,19 @@ nodejs_binary_repositories()
 
 #http_archive(
 #    name = "com_github_bazelbuild_buildtools",
-#    url = "https://github.com/bazelbuild/buildtools/archive/%s.zip" % buildtools_version,
+#    urls = [
+#        "https://mirror.bazel.build/github.com/bazelbuild/buildtools/archive/%s.zip" % buildtools_version,
+#        "https://github.com/bazelbuild/buildtools/archive/%s.zip" % buildtools_version,
+#    ]
 #    strip_prefix = "buildtools-%s" % buildtools_version,
 #    sha256 = "edf39af5fc257521e4af4c40829fffe8fba6d0ebff9f4dd69a6f8f1223ae047b",
 #)
 #http_archive(
 #    name = "build_bazel_rules_typescript",
-#    url = "https://github.com/bazelbuild/rules_typescript/archive/%s.zip" % rules_typescript_version,
+#    urls = [
+#       "https://mirror.bazel.build/github.com/bazelbuild/rules_typescript/archive/%s.zip" % rules_typescript_version,
+#       "https://github.com/bazelbuild/rules_typescript/archive/%s.zip" % rules_typescript_version,
+#    ]
 #    strip_prefix = "rules_typescript-%s" % rules_typescript_version,
 #    sha256 = "a2b26ac3fc13036011196063db1bf7f1eae81334449201dc28087ebfa3708c99",
 #)
@@ -84,10 +97,10 @@ browser_repositories(
     firefox = True,
 )
 
-load("//tools/java:devserver.bzl", "devserver_certificates")
+load("//tools/java:devserver.bzl", "devserver")
 
-devserver_certificates(
-    name = "io_machinecode_devserver_certificates",
+devserver(
+    name = "io_machinecode_devserver",
     hosts = [
         "localhost",
         "0.0.0.0",
@@ -102,9 +115,9 @@ load("@io_bazel_rules_sass//sass:sass_repositories.bzl", "sass_repositories")
 
 sass_repositories()
 
-load("@io_bazel_skydoc//skylark:skylark.bzl", "skydoc_repositories")
+load("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
 
-skydoc_repositories()
+stardoc_repositories()
 
 load("//imports:devsrv_repositories.bzl", "devsrv_repositories")
 
@@ -116,25 +129,15 @@ build_repositories()
 
 load("//imports:grpc_repositories.bzl", "grpc_repositories")
 
-grpc_repositories(omit = [
-    "guava",
-])
-
-load("//imports:undertow_repositories.bzl", "undertow_repositories")
-
-undertow_repositories()
+grpc_repositories()
 
 load("//imports:dagger_repositories.bzl", "dagger_repositories")
 
 dagger_repositories()
 
-load("//imports:jooq_repositories.bzl", "jooq_repositories")
+load("//imports:sql_repositories.bzl", "sql_repositories")
 
-jooq_repositories()
-
-load("//imports:junit_repositories.bzl", "junit_repositories")
-
-junit_repositories()
+sql_repositories()
 
 load("//imports:npm_repositories.bzl", "npm_repositories")
 

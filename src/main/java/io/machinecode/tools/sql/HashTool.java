@@ -16,9 +16,10 @@
  */
 package io.machinecode.tools.sql;
 
+import static java.lang.System.out;
+
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
@@ -26,8 +27,6 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-
-import static java.lang.System.out;
 
 /** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
 public class HashTool {

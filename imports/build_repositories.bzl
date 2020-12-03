@@ -1,21 +1,19 @@
-load("//tools/java:maven_jar.bzl", "maven_jar")
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+load("//:defs.bzl", "maven_repositories")
 load("//tools/ui:npm.bzl", "npm_archive")
 
 def build_repositories(
         com_google_javascript_closure_compiler_version = "v20180101",
         com_googlecode_htmlcompressor_htmlcompressor_version = "1.5.2",
         com_yahoo_platform_yui_yuicompressor_version = "2.4.8"):
-    maven_jar(
-        name = "com_google_javascript_closure_compiler",
-        artifact = "com.google.javascript:closure-compiler:" + com_google_javascript_closure_compiler_version,
-    )
-    maven_jar(
-        name = "com_googlecode_htmlcompressor_htmlcompressor",
-        artifact = "com.googlecode.htmlcompressor:htmlcompressor:" + com_googlecode_htmlcompressor_htmlcompressor_version,
-    )
-    maven_jar(
-        name = "com_yahoo_platform_yui_yuicompressor",
-        artifact = "com.yahoo.platform.yui:yuicompressor:" + com_yahoo_platform_yui_yuicompressor_version,
+    maven_install(
+        name = "build_m2",
+        repositories = maven_repositories,
+        artifacts = [
+            "com.google.javascript:closure-compiler:" + com_google_javascript_closure_compiler_version,
+            "com.googlecode.htmlcompressor:htmlcompressor:" + com_googlecode_htmlcompressor_htmlcompressor_version,
+            "com.yahoo.platform.yui:yuicompressor:" + com_yahoo_platform_yui_yuicompressor_version,
+        ]
     )
 
     npm_archive(

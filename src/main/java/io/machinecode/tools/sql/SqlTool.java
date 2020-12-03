@@ -16,9 +16,10 @@
  */
 package io.machinecode.tools.sql;
 
+import static java.lang.System.out;
+
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.Driver;
@@ -29,8 +30,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import static java.lang.System.out;
 
 /** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
 public class SqlTool {
@@ -245,7 +244,8 @@ public class SqlTool {
   private static void _usage() {
     out.println("Usage: sql-util");
     out.println(
-        "       [-h|--host <host>] [-p|--port <port>] [-d|--database <database>] [-U|--username] [-P|--password]");
+        "       [-h|--host <host>] [-p|--port <port>] [-d|--database <database>] [-U|--username]"
+            + " [-P|--password]");
     out.println("       [-s|--split] [-i|--ignore-errors] [-a|--auto-commit]");
     out.println("       [-c|--cmd <sql>] [-f|--file <sql filename>]...");
   }

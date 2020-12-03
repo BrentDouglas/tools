@@ -26,8 +26,5 @@
  */
 package io.machinecode.tools.build;
 
-/**
- * @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a>
- */
-public class Template {
-}
+/** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
+public class Template {}
