@@ -15,5 +15,6 @@ java_library(
         "@sql_m2//:org_flywaydb_flyway_core",
         "@sql_m2//:org_jooq_jooq_codegen",
         "@sql_m2//:org_jooq_jooq_meta",
+        "@sql_m2//:javax_xml_bind_jaxb_api",
     ],
 )

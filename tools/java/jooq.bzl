@@ -49,6 +49,7 @@ java_jooq_library = rule(
             Label("@sql_m2//:org_jooq_jooq_codegen"),
             Label("@sql_m2//:org_jooq_jooq_meta"),
             Label("@sql_m2//:org_reactivestreams_reactive_streams"),
+            Label("@sql_m2//:javax_xml_bind_jaxb_api"),
         ]),
         "config": attr.label(allow_single_file=True),
         "url": attr.string(),
