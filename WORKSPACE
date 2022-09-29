@@ -11,13 +11,11 @@ workspace(name = "io_machinecode_tools")
 # Archives
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 load("//imports:java_repositories.bzl", "java_repositories")
 
 java_repositories()
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")
-
 load("//imports:format_repositories.bzl", "format_repositories")
 
 format_repositories()
@@ -79,7 +77,7 @@ grpc_rules_repositories()
 ####################################
 # Load and install our dependencies downloaded above.
 
-load("@build_bazel_rules_nodejs//:defs.bzl", "yarn_install")
+load("@build_bazel_rules_nodejs//:index.bzl", "yarn_install")
 
 yarn_install(
     name = "npm",
@@ -150,3 +148,11 @@ jmh_repositories()
 load("//imports:template_repositories.bzl", "template_repositories")
 
 template_repositories()
+
+load("//imports:profiler_repositories.bzl", "profiler_repositories")
+
+profiler_repositories()
+
+load("//imports:checkstyle_repositories.bzl", "checkstyle_repositories")
+
+checkstyle_repositories()

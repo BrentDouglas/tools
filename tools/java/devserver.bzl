@@ -32,10 +32,8 @@ filegroup(
 java_binary(
     name = "devserver",
     main_class = "io.machinecode.tools.devsrv.Main",
-    resource_jars = [
-        "@io_machinecode_tools//src/main/java/io/machinecode/tools/devsrv:lib",
-    ],
     runtime_deps = [
+        "@io_machinecode_tools//src/main/java/io/machinecode/tools/devsrv:lib",
         "@devsrv_m2//:gnu_getopt_java_getopt",
         "@devsrv_m2//:io_undertow_undertow_core",
         "@devsrv_m2//:io_undertow_undertow_servlet",

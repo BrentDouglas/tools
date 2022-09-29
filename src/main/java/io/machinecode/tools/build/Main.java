@@ -44,7 +44,9 @@ import org.stringtemplate.v4.STWriter;
 import org.stringtemplate.v4.misc.ErrorBuffer;
 import org.yaml.snakeyaml.Yaml;
 
-/** @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a> */
+/**
+ * @author <a href="mailto:brent.n.douglas@gmail.com">Brent Douglas</a>
+ */
 public class Main {
 
   public static void main(final String... args) throws Exception {

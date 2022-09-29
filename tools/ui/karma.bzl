@@ -1,7 +1,6 @@
 load(
-    "@build_bazel_rules_nodejs//internal:node.bzl",
-    "expand_path_into_runfiles",
-    "sources_aspect",
+    "@build_bazel_rules_nodejs//internal/common:expand_into_runfiles.bzl",
+    "expand_location_into_runfiles",
 )
 load("@io_bazel_rules_webtesting//web:web.bzl", "web_test_suite")
 load(
@@ -108,7 +107,7 @@ def _karma_test_impl(ctx):
             "TMPL_DEBUG_PORT": str(debug_port),
             "TMPL_PORT": str(port),
             "TMPL_TEMPLATES": templates,
-            "TMPL_BROWSERS": ",".join(["'%s'" % browser for browser in browsers]) if browsers else ""
+            "TMPL_BROWSERS": ",".join(["'%s'" % browser for browser in browsers]) if browsers else "",
         },
     )
 
@@ -116,7 +115,7 @@ def _karma_test_impl(ctx):
 
     cmd = " \\\n  && ".join([
         "r=$PWD",
-        "cd ..", #TODO why
+        "cd ..",  #TODO why
         "export PATH",
         "p=$PWD",
         _extract_module("%s/%s" % (ctx.workspace_name, ctx.file.karma.path)),
@@ -158,7 +157,7 @@ karma_test = rule(
         "deps": attr.label_list(
             doc = "Other targets which produce JavaScript such as `ts_library`",
             allow_files = True,
-            aspects = [sources_aspect],
+            #aspects = [sources_aspect],
         ),
         "data": attr.label_list(
             doc = "Runtime dependencies",

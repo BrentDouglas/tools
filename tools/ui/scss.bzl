@@ -27,9 +27,10 @@ def _scss_library_impl(ctx):
     output = ctx.outputs.css
 
     node = " ".join(
-        ["%s node_modules/node-sass/bin/node-sass" % ctx.file._node.path] +
-        ["--include-path node_modules"] +
-        ["--include-path ./%s" % ctx.label.package] +
+        ["%s node_modules/sass/sass.js" % ctx.file._node.path] +
+        ["--stdin"] +
+        ["--load-path node_modules"] +
+        ["--load-path ./%s" % ctx.label.package] +
         ["--%s" % x for x in opts] +
         ["--%s %s" % (k, sopts[k]) for k in sopts],
     )
@@ -78,7 +79,7 @@ scss_library = rule(
         "opts": attr.string_list(),
         "string_opts": attr.string_dict(),
         "_scss": attr.label(
-            default = Label("@node-sass//pkg"),
+            default = Label("@sass//pkg"),
             allow_single_file = True,
         ),
         "_concat": attr.label(

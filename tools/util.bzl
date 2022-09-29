@@ -507,7 +507,7 @@ def _get_class_list_impl(ctx):
         "p=$PWD",
     ])
     for file in ctx.files.deps:
-        cmd += """ \\\n  && (jar tf $p/%s | grep '\.class$' | sed 's:\\/:.:g' | sed 's:\.class$::') >> %s""" % (file.path, dest.path)
+        cmd += """ \\\n  && (jar tf $p/%s | grep '\\.class$' | sed 's:\\/:.:g' | sed 's:\\.class$::') >> %s""" % (file.path, dest.path)
     ctx.actions.run_shell(
         inputs = deps,
         outputs = [dest],

@@ -66,8 +66,8 @@ def build_repositories(
         types = False,
     )
     npm_archive(
-        name = "node-sass",
-        version = "4.12.0",
+        name = "sass",
+        version = "1.32.7",
         types = False,
         rebuild = True,
     )

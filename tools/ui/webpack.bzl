@@ -34,7 +34,7 @@ def _webpack_compile_impl(ctx):
       module: {
         rules: [
           {
-            test: /\.js$/,
+            test: /\\.js$/,
             use: ["source-map-loader"],
             enforce: "pre"
           }

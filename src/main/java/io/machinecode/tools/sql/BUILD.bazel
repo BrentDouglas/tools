@@ -12,9 +12,9 @@ java_library(
     ],
     deps = [
         "@sql_m2//:gnu_getopt_java_getopt",
+        "@sql_m2//:javax_xml_bind_jaxb_api",
         "@sql_m2//:org_flywaydb_flyway_core",
         "@sql_m2//:org_jooq_jooq_codegen",
         "@sql_m2//:org_jooq_jooq_meta",
-        "@sql_m2//:javax_xml_bind_jaxb_api",
     ],
 )

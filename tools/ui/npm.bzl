@@ -77,8 +77,8 @@ npm_archive = repository_rule(
     local = True,
     attrs = {
         "_download_script": attr.label(default = Label("//tools/ui:download-npm")),
-        "_node": attr.label(default = Label("@nodejs//:bin/node")),
-        "_npm": attr.label(default = Label("@nodejs//:bin/npm")),
+        "_node": attr.label(default = Label("@nodejs_linux_amd64//:bin/nodejs/bin/node")),
+        "_npm": attr.label(default = Label("@nodejs_linux_amd64//:bin/nodejs/bin/npm")),
         "repository": attr.string(default = "http://registry.npmjs.org"),
         "package": attr.string(mandatory = False),
         "version": attr.string(),

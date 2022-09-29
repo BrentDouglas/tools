@@ -1,0 +1,25 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "files",
+    srcs = [
+        "LICENCE",
+        "profiler.sh",
+        "build/jattach",
+    ],
+)
+
+filegroup(
+    name = "jars",
+    srcs = [
+        "build/async-profiler.jar",
+        "build/converter.jar",
+    ],
+)
+
+filegroup(
+    name = "native_lib",
+    srcs = [
+        "build/libasyncProfiler.so",
+    ],
+)

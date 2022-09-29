@@ -214,16 +214,16 @@ def _typescript_library_impl(ctx):
         for out in outs:
             if is_any_jar(out.path):
                 continue
-            cmds.append("""perl -pi -e 's-(?:\.\./)*(?:node_modules/)?--g' %s""" % (out.path))
+            cmds.append("""perl -pi -e 's-(?:\\.\\./)*(?:node_modules/)?--g' %s""" % (out.path))
 
     # If we had input jars we need to generate the list of output files to stick into the output jar
     if out_jar:
         for j in jars:
-            cmds.append("""(cd $p/%s && jar tf $p/%s | grep -v '\.d.ts$' | grep -E '\.ts$' | sed -E 's/\.ts$/.js/' ) >> classes.list""" % (pkg, j.path))
+            cmds.append("""(cd $p/%s && jar tf $p/%s | grep -v '\\.d.ts$' | grep -E '\\.ts$' | sed -E 's/\\.ts$/.js/' ) >> classes.list""" % (pkg, j.path))
             if is_tsd:
-                cmds.append("""(cd $p/%s && jar tf $p/%s | grep -v '\.d.ts$' | grep -E '\.ts$' | sed -E 's/\.ts$/.d.ts/' ) >> classes.list""" % (pkg, j.path))
+                cmds.append("""(cd $p/%s && jar tf $p/%s | grep -v '\\.d.ts$' | grep -E '\\.ts$' | sed -E 's/\\.ts$/.d.ts/' ) >> classes.list""" % (pkg, j.path))
             if is_source_map:
-                cmds.append(""""(cd $p/%s && jar tf $p/%s | grep -v '\.d.ts$' | grep -E '\.ts$' | sed -E 's/\.ts$/.map/' ) >> classes.list""" % (pkg, j.path))
+                cmds.append(""""(cd $p/%s && jar tf $p/%s | grep -v '\\.d.ts$' | grep -E '\\.ts$' | sed -E 's/\\.ts$/.map/' ) >> classes.list""" % (pkg, j.path))
         cmds.append("cd $p/%s && jar cfM $p/%s @$p/classes.list" % (dest_dir, out_jar.path))
 
     cmd_file = ctx.actions.declare_file(ctx.label.name + "-tsc-cmd")
