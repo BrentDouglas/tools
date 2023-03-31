@@ -1,3 +1,5 @@
+load("//tools:util.bzl", "strip_base")
+
 #
 # Clean a database either with flyway or by dumping a schema file into it
 #
@@ -5,8 +7,9 @@ def _flyway_clean_impl(ctx):
     template = ctx.file.config
     schema = ctx.file.schema
     version = ctx.outputs.version
-    base = ctx.genfiles_dir.path
-    config = ctx.actions.declare_file(base + "/flyway-clean.conf")
+    base = ctx.bin_dir.path
+    gen_base = ctx.genfiles_dir.path
+    config = ctx.actions.declare_file(gen_base + "/flyway-clean.conf")
 
     classpath = ""
     add = False
@@ -112,9 +115,10 @@ flyway_clean = rule(
 def _flyway_migrate_impl(ctx):
     template = ctx.file.config
     version = ctx.outputs.version
-    base = ctx.genfiles_dir.path
-    config = ctx.actions.declare_file(base + "/flyway-migrate.conf")
-    migration_version = ctx.actions.declare_file(base + "/flyway_migration_number.txt")
+    base = ctx.bin_dir.path
+    gen_base = ctx.genfiles_dir.path
+    config = ctx.actions.declare_file(gen_base + "/flyway-migrate.conf")
+    migration_version = ctx.actions.declare_file(gen_base + "/flyway_migration_number.txt")
     classpath = ""
     add = False
     directory = None
@@ -199,7 +203,8 @@ flyway_migrate = rule(
 # Run after migrate files
 #
 def _flyway_after_migrate_impl(ctx):
-    base = ctx.genfiles_dir.path
+    base = ctx.bin_dir.path
+    gen_base = ctx.genfiles_dir.path
 
     classpath = ""
     add = False

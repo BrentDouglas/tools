@@ -1,7 +1,6 @@
 load("//tools/java:java_test_suite.bzl", "java_test_suite")
 load("//tools/java:java_package.bzl", "java_package")
 
-
 def benchmark_library(
         name,
         **kwargs):

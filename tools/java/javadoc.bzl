@@ -15,8 +15,8 @@
 # Javadoc rule.
 def _impl(ctx):
     zip_output = ctx.outputs.zip
-    transitive_jars = depset(direct=None)
-    source_jars = depset(direct=None)
+    transitive_jars = depset(direct = None)
+    source_jars = depset(direct = None)
     for lib in ctx.attr.libs:
         source_jars = depset(direct = None, transitive = [source_jars, depset(direct = lib[JavaInfo].source_jars)])
         transitive_jars = depset(direct = None, transitive = [transitive_jars, depset(direct = lib[JavaInfo].transitive_deps.to_list())])

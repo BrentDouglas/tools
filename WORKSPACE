@@ -20,6 +20,10 @@ load("//imports:format_repositories.bzl", "format_repositories")
 
 format_repositories()
 
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+protobuf_deps()
+
 load("//imports:stardoc_repositories.bzl", "stardoc_repositories")
 
 stardoc_repositories()
@@ -32,7 +36,7 @@ load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_depe
 
 go_rules_dependencies()
 
-go_register_toolchains()
+go_register_toolchains(version = "1.20.2")
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
@@ -41,6 +45,10 @@ gazelle_dependencies()
 load("//imports:nodejs_repositories.bzl", "nodejs_repositories")
 
 nodejs_repositories()
+
+load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+
+build_bazel_rules_nodejs_dependencies()
 
 load("//imports:nodejs_binary_repositories.bzl", "nodejs_binary_repositories")
 

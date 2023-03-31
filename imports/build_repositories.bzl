@@ -13,7 +13,7 @@ def build_repositories(
             "com.google.javascript:closure-compiler:" + com_google_javascript_closure_compiler_version,
             "com.googlecode.htmlcompressor:htmlcompressor:" + com_googlecode_htmlcompressor_htmlcompressor_version,
             "com.yahoo.platform.yui:yuicompressor:" + com_yahoo_platform_yui_yuicompressor_version,
-        ]
+        ],
     )
 
     npm_archive(

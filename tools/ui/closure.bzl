@@ -41,7 +41,7 @@ def _closure_library_impl(ctx):
         ] +
         [extract_module(dep.path) if not dep.path.startswith(base) else extract_module(dep.path[len(base) + 1:]) for dep in ctx.files.deps] +
         ["export NODE_PATH=$p/node_modules"] +
-#        ["find node_modules/google-closure-compiler"] +
+        #        ["find node_modules/google-closure-compiler"] +
         [node] +
         ["find . | grep -v node_modules"],
     )

@@ -47,7 +47,7 @@ def _asciidoc_impl(ctx):
 
 doc_to_html = rule(
     implementation = _asciidoc_impl,
-#    doc = "Process a file with asciidoctor and output the results as html.",
+    #    doc = "Process a file with asciidoctor and output the results as html.",
     attrs = {
         "srcs": attr.label_list(
             allow_files = True,
@@ -92,7 +92,7 @@ Args:
 
 doc_to_pdf = rule(
     implementation = _asciidoc_impl,
-#    doc = "Process a file with asciidoctor and output the results as a PDF.",
+    #    doc = "Process a file with asciidoctor and output the results as a PDF.",
     attrs = {
         "srcs": attr.label_list(allow_files = True),
         "resources": attr.label_list(allow_files = True),

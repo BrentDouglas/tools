@@ -1,6 +1,8 @@
+load("@io_machinecode_tools//tools/java:java_filegroup.bzl", "java_filegroup")
+
 package(default_visibility = ["//visibility:public"])
 
-filegroup(
+java_filegroup(
     name = "src",
     srcs = glob(["*.java"]),
 )

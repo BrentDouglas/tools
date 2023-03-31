@@ -14,7 +14,7 @@ def _coverage_html_impl(ctx):
         "export PATH",
         "p=$PWD",
         "mkdir $p/tar/",
-        ] + mvs + [
+    ] + mvs + [
         "genhtml -q -o $p/tar/ \\\n" + (" \\\n".join(["    $p/%s" % file for file in rels])),
         "cd $p/tar/",
         "tar cf - . > $p/%s" % tar.path,

@@ -1,4 +1,3 @@
-
 def _add_classpath_impl(ctx):
     name = ctx.label.name
     in_jar = ctx.file.jar
@@ -8,40 +7,40 @@ def _add_classpath_impl(ctx):
 
     manifest = ""
     for line in ctx.attr.manifest:
-      manifest += line + "\n"
+        manifest += line + "\n"
 
     if deps:
-      man_pref = "Class-Path: "
-      for dep in deps:
-        manifest += man_pref + prefix + dep.basename + "\n"
-        man_pref = "  "
+        man_pref = "Class-Path: "
+        for dep in deps:
+            manifest += man_pref + prefix + dep.basename + "\n"
+            man_pref = "  "
 
     command = " \\\n  && ".join([
-      "export PATH",
-      "cp %s %s" % (in_jar.path, out_jar.path),
-      "echo '%s' > temp.mf" % (manifest),
-      """iconv -f "$( locale charmap | tr [:lower:] [:upper:] )" -t UTF-8 temp.mf > MANIFEST.MF""",
-      "jar umf MANIFEST.MF %s" % (out_jar.path),
+        "export PATH",
+        "cp %s %s" % (in_jar.path, out_jar.path),
+        "echo '%s' > temp.mf" % (manifest),
+        """iconv -f "$( locale charmap | tr [:lower:] [:upper:] )" -t UTF-8 temp.mf > MANIFEST.MF""",
+        "jar umf MANIFEST.MF %s" % (out_jar.path),
     ])
     outs = [out_jar]
     ctx.actions.run_shell(
-        inputs=[in_jar] + deps,
-        outputs=outs,
-        arguments=[],
-        command=command
+        inputs = [in_jar] + deps,
+        outputs = outs,
+        arguments = [],
+        command = command,
     )
     return struct(files = depset(outs))
 
 add_classpath = rule(
     implementation = _add_classpath_impl,
     attrs = {
-        "jar": attr.label(allow_single_file=True),
+        "jar": attr.label(allow_single_file = True),
         "deps": attr.label_list(),
         "prefix": attr.string(),
         "manifest": attr.string_list(),
     },
     outputs = {
-        "jar": "%{name}.jar"
+        "jar": "%{name}.jar",
     },
 )
 """Repack a jar for deployment, adding the classpath to the manifest

@@ -34,7 +34,7 @@ def _typescript_config_impl(ctx, dts = []):
     include = ctx.attr.include
     root_dirs = ctx.attr.root_dirs
 
-    options = ''
+    options = ""
     for k in opts:
         options += '        "%s": %s,\n' % (k, opts[k])
     for k in sopts:

@@ -1,17 +1,28 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 
 def format_repositories(
-        google_java_format_version = "1.15.0",
-        google_java_format_sha256 = "a356bb0236b29c57a3ab678f17a7b027aad603b0960c183a18f1fe322e4f38ea",
-        com_github_bazelbuild_buildtools_version = "49a6c199e3fbf5d94534b2771868677d3f9c6de9",
-        com_github_bazelbuild_buildtools_sha256 = "edf39af5fc257521e4af4c40829fffe8fba6d0ebff9f4dd69a6f8f1223ae047b"):
+        google_java_format_version = "1.16.0",
+        google_java_format_sha256 = "82819a2c5f7067712e0233661b864c1c034f6657d63b8e718b4a50e39ab028f6",
+        com_github_bazelbuild_buildtools_version = "6.1.0",
+        com_github_bazelbuild_buildtools_sha256 = "4e3e330089960e0962f908ba6feac0859faed070c5292e5cc207cfcc6a428fe5",
+        com_google_protobuf_version = "3.13.0",
+        com_google_protobuf_sha256 = "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a"):
     http_jar(
         name = "google_java_format",
         sha256 = google_java_format_sha256,
         urls = [
-            "https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/%s/google-java-format-%s-all-deps.jar" % (google_java_format_version, google_java_format_version),
-            "https://mirror.bazel.build/github.com/google/google-java-format/releases/download/google-java-format-%s/google-java-format-%s-all-deps.jar" % (google_java_format_version, google_java_format_version),
-            "https://github.com/google/google-java-format/releases/download/google-java-format-%s/google-java-format-%s-all-deps.jar" % (google_java_format_version, google_java_format_version),
+            "https://mirror.bazel.build/github.com/google/google-java-format/releases/download/v%s/google-java-format-%s-all-deps.jar" % (google_java_format_version, google_java_format_version),
+            "https://github.com/google/google-java-format/releases/download/v%s/google-java-format-%s-all-deps.jar" % (google_java_format_version, google_java_format_version),
+        ],
+    )
+
+    http_archive(
+        name = "com_google_protobuf",
+        sha256 = com_google_protobuf_sha256,
+        strip_prefix = "protobuf-%s" % com_google_protobuf_version,
+        urls = [
+            "https://mirror.bazel.build/github.com/protocolbuffers/protobuf/archive/v%s.tar.gz" % com_google_protobuf_version,
+            "https://github.com/protocolbuffers/protobuf/archive/v%s.tar.gz" % com_google_protobuf_version,
         ],
     )
 

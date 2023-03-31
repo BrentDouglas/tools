@@ -212,7 +212,7 @@ def _move_up_impl(ctx):
 
 move_up = rule(
     implementation = _move_up_impl,
-#    doc = "Move a set of files up some dirs.",
+    #    doc = "Move a set of files up some dirs.",
     attrs = {
         "srcs": attr.label_list(
             allow_files = True,
@@ -260,7 +260,7 @@ def _move_down_impl(ctx):
 
 move_down = rule(
     implementation = _move_down_impl,
-#    doc = "Move a set of files down some dirs.",
+    #    doc = "Move a set of files down some dirs.",
     attrs = {
         "srcs": attr.label_list(
             allow_files = True,

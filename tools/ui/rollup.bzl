@@ -14,8 +14,7 @@ load(
     "list_file",
     "strip_base",
 )
-load("//tools:ui.bzl", "extract_module", "extract_all_modules")
-
+load("//tools:ui.bzl", "extract_all_modules", "extract_module")
 
 def _rollup_library_impl(ctx):
     base = ctx.bin_dir.path

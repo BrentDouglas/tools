@@ -1,12 +1,12 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def nodejs_repositories(
-        build_bazel_rules_nodejs_version = "3.0.0",
-        build_bazel_rules_nodejs_sha256 = "6142e9586162b179fdd570a55e50d1332e7d9c030efd853453438d607569721d",
-        io_bazel_rules_sass_version = "1.32.2",
-        io_bazel_rules_sass_sha256 = "7c4c9d8ac252ccd3d116845151cfa9e576cf6ee787d91b3c7c63092c0218e7c2",
-        io_bazel_rules_webtesting_version = "0.3.3",
-        io_bazel_rules_webtesting_sha256 = "d7cee4275a55dc4996c392dab662c4f7da9c5199e12bc684bec350a9aadd9bdc"):
+        build_bazel_rules_nodejs_version = "5.8.2",
+        build_bazel_rules_nodejs_sha256 = "94070eff79305be05b7699207fbac5d2608054dd53e6109f7d00d923919ff45a",
+        io_bazel_rules_sass_version = "1.60.0",
+        io_bazel_rules_sass_sha256 = "4149d7d28e4b0d037b7359415945fa6a893bbf031a2c1a3f7c1c0f4c562cbbb5",
+        io_bazel_rules_webtesting_version = "0.3.5",
+        io_bazel_rules_webtesting_sha256 = "1399c98bbf15c210eb8e97f3b375322f28b8bf754480a2d86f88799c76663358"):
     http_archive(
         name = "build_bazel_rules_nodejs",
         sha256 = build_bazel_rules_nodejs_sha256,

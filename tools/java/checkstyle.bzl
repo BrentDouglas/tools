@@ -1,4 +1,8 @@
+load("//tools:util.bzl", "strip_base")
+
 def _checkstyle_test_impl(ctx):
+    base = ctx.bin_dir.path
+    gen_base = ctx.genfiles_dir.path
     name = ctx.label.name
     srcs = ctx.files.srcs
     deps = ctx.files.deps
@@ -13,7 +17,7 @@ def _checkstyle_test_impl(ctx):
         if add:
             classpath += ":"
         add = True
-        classpath += file.path
+        classpath += strip_base(file.path, base, gen_base)
     for file in ctx.files.deps:
         classpath += ":" + file.path
 

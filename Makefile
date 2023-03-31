@@ -22,7 +22,7 @@ help:
 
 
 .PHONY: all
-all: build check build-coverage
+all: build check
 
 .PHONY: build
 build:
@@ -34,8 +34,14 @@ format:
 	@bazel build @com_github_bazelbuild_buildtools//buildifier \
 				@google_java_format//jar
 	@find . -type f \( -name BUILD -or -name BUILD.bazel \) \
-		| xargs $$(bazel info bazel-bin)/external/com_github_bazelbuild_buildtools/buildifier/*/buildifier
-	@java -jar $$(bazel info execution_root)/external/google_java_format/jar/downloaded.jar -i \
+		| bazel run //:buildifier
+	@java -jar \
+		--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+		--add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
+		--add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+		--add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+		--add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED \
+		$$(bazel info | grep output_base | awk '{print $$2}')/external/google_java_format/jar/downloaded.jar -i \
 		$$(find src/ -type f -name '*.java')
 
 .PHONY: check

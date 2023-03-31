@@ -188,7 +188,7 @@ def _pkg_app_impl(ctx):
         """export FILES="$( ( cd $p/tar/ && find -type f | sort | xargs shasum | grep -v %s | awk '{print "[" "\\"" $1 "\\"" "," "\\"" $2 "\\"" "]"}' | tr '\\n' ',' ) )" """ % sw.basename,
         """export SHA="$( ( cd $p/tar/ && find -type f | sort | shasum | cut -d' ' -f1 ) )" """,
         """export CONTENT="$(cat %s | sed "s/TEMPLATE_VERSION/$SHA/")" """ % (sw.path),
-        """echo "${CONTENT/"TEMPLATE_FILES"/$FILES}" > $p/tar/%s""" % (ctx.attr.service_worker)
+        """echo "${CONTENT/"TEMPLATE_FILES"/$FILES}" > $p/tar/%s""" % (ctx.attr.service_worker),
     ]
 
     cmd = " \\\n  && ".join(

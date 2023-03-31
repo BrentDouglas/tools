@@ -1,15 +1,14 @@
+load("//tools:util.bzl", "get_path", "is_any_jar", "join_dict", "join_list")
 
-load("//tools:util.bzl", "join_list", "join_dict", "get_path", "is_any_jar")
-
-def _download_npm(ctx, name, version, deps, rebuild, types=False):
+def _download_npm(ctx, name, version, deps, rebuild, types = False):
     repository = ctx.attr.repository
-    file_name = name.replace('@', 'at-').replace('/', '-')
+    file_name = name.replace("@", "at-").replace("/", "-")
     if types:
-        pkg = '@types/%s@%s' % (name, version)
-        file = '%s-types-%s.jar' % (file_name, version)
+        pkg = "@types/%s@%s" % (name, version)
+        file = "%s-types-%s.jar" % (file_name, version)
     else:
-        pkg = '%s@%s' % (name, version)
-        file = '%s-%s.jar' % (file_name, version)
+        pkg = "%s@%s" % (name, version)
+        file = "%s-%s.jar" % (file_name, version)
     script = ctx.path(ctx.attr._download_script)
     os = ctx.os.name
     node = ctx.path(ctx.attr._node)
@@ -20,17 +19,16 @@ def _download_npm(ctx, name, version, deps, rebuild, types=False):
             dep_str += " -d '%s@%s'" % (k, deps[k])
     out_file = ctx.path("pkg/%s" % file)
     cmd = " \\\n  && ".join([
-      "export PATH",
-      "p=$PWD",
-      "mkdir -p $(dirname %s)" % out_file,
-      "NODE=%s NPM=%s OS=%s %s -f '%s' -p '%s' %s -r '%s' -o '%s'" % (node, npm, os, script, file, pkg, dep_str, repository, out_file),
+        "export PATH",
+        "p=$PWD",
+        "mkdir -p $(dirname %s)" % out_file,
+        "NODE=%s NPM=%s OS=%s %s -f '%s' -p '%s' %s -r '%s' -o '%s'" % (node, npm, os, script, file, pkg, dep_str, repository, out_file),
     ])
     out = ctx.execute([ctx.which("bash"), "-c", cmd])
     return struct(
         out = out,
         file = file,
     )
-
 
 def _npm_archive_impl(ctx):
     name = ctx.name if not ctx.attr.package else ctx.attr.package
@@ -69,7 +67,7 @@ java_import(
             main_content,
             types_content,
         ]),
-        False
+        False,
     )
 
 npm_archive = repository_rule(
@@ -93,10 +91,9 @@ npm_archive = repository_rule(
 """Download a NPM archive. If we can we will also download the type files.
 """
 
-
 def _npm_filegroup_impl(ctx):
     label = ctx.attr.archive.label
-    name = label.workspace_root[9:] # external/<name>
+    name = label.workspace_root[9:]  # external/<name>
     base = ctx.bin_dir.path
     dest_dir = base + "/" + ctx.label.package
     outputs = []
@@ -106,17 +103,17 @@ def _npm_filegroup_impl(ctx):
         outputs.append(out)
         moves.append("cp %s $p/%s" % (x, out.path))
     cmd = " \\\n  && ".join([
-      "export PATH",
-      "p=$PWD",
-      "rm -rf %s" % (dest_dir),
-      "mkdir -p %s" % (dest_dir),
-      "cd %s" % (dest_dir),
-      "jar xf $p/%s" % (ctx.file.archive.path),
+        "export PATH",
+        "p=$PWD",
+        "rm -rf %s" % (dest_dir),
+        "mkdir -p %s" % (dest_dir),
+        "cd %s" % (dest_dir),
+        "jar xf $p/%s" % (ctx.file.archive.path),
     ] + moves)
     ctx.actions.run_shell(
-        inputs=[ctx.file.archive],
-        outputs=outputs,
-        command=cmd
+        inputs = [ctx.file.archive],
+        outputs = outputs,
+        command = cmd,
     )
     return struct(
         files = depset(outputs),
@@ -136,31 +133,30 @@ npm_filegroup = rule(
 is for when we want to use this files in the final archive.
 """
 
-
 def _npm_combine_impl(ctx):
     base = ctx.bin_dir.path
     dest_dir = base + "/" + ctx.label.package + "/" + ctx.label.name
     moves = []
     for dep in ctx.attr.deps:
-      label = dep.label
-      for x in dep.files.to_list():
-        if is_any_jar(x.path):
-          moves.append("jar xf $p/%s" % x.path)
-        else:
-          moves.append("tar zxf $p/%s" % x.path)
+        label = dep.label
+        for x in dep.files.to_list():
+            if is_any_jar(x.path):
+                moves.append("jar xf $p/%s" % x.path)
+            else:
+                moves.append("tar zxf $p/%s" % x.path)
     cmd = " \\\n  && ".join([
-      "export PATH",
-      "p=$PWD",
-      "rm -rf %s" % (dest_dir),
-      "mkdir -p %s" % (dest_dir),
-      "cd %s" % (dest_dir),
+        "export PATH",
+        "p=$PWD",
+        "rm -rf %s" % (dest_dir),
+        "mkdir -p %s" % (dest_dir),
+        "cd %s" % (dest_dir),
     ] + moves + [
-      "jar cfM $p/%s ." % (ctx.outputs.dest.path),
+        "jar cfM $p/%s ." % (ctx.outputs.dest.path),
     ])
     ctx.actions.run_shell(
         inputs = ctx.files.deps,
         outputs = [ctx.outputs.dest],
-        command = cmd
+        command = cmd,
     )
     return struct(
         files = depset([ctx.outputs.dest]),
@@ -172,12 +168,11 @@ npm_combine = rule(
         "deps": attr.label_list(),
     },
     outputs = {
-        "dest": "%{name}.jar"
-    }
+        "dest": "%{name}.jar",
+    },
 )
 """Combine a set of NPM archives into one. Used to sync IDEA with the actual dependencies.
 """
-
 
 def _npm_package_impl(ctx):
     name = ctx.label.name
@@ -190,57 +185,57 @@ def _npm_package_impl(ctx):
         ctx.actions.write(
             pkg,
             "{\n" + join_list("    ", [
-               '"name": "%s"' % package_name,
-               '"version": "%s"' % ctx.attr.version,
-               '' if not ctx.attr.keywords else '"keywords": "%s"' % ctx.attr.keywords,
-               '' if not ctx.attr.homepage else '"homepage": "%s"' % ctx.attr.homepage,
-               '' if not ctx.attr.bugs else '"bugs": "%s"' % ctx.attr.bugs,
-               '' if not ctx.attr.description else '"description": "%s"' % ctx.attr.description,
-               '' if not ctx.attr.main else '"main": "%s"' % ctx.attr.main,
-               '' if not ctx.attr.types else '"types": "%s"' % ctx.attr.types,
-               '' if not ctx.attr.bin else '"bin": {\n%s    \n}' % join_dict("        ", ctx.attr.bin),
-               '"license": "%s"' % ctx.attr.license,
-               '' if not ctx.attr.man else '"man": [\n%s    \n]' % join_list("        ", ctx.attr.man),
-               '' if not ctx.attr.repository else '"repository": {\n%s    \n}' % join_dict("        ", ctx.attr.repository),
-               '' if not ctx.attr.dependencies else '"dependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.dependencies),
-               '' if not ctx.attr.dev_dependencies else '"devDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.dev_dependencies),
-               '' if not ctx.attr.peer_dependencies else '"peerDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.peer_dependencies),
-               '' if not ctx.attr.bundled_dependencies else '"bundledDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.bundled_dependencies),
-               '' if not ctx.attr.optional_dependencies else '"optionalDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.optional_dependencies),
-               '' if not ctx.attr.engines else '"engines": {\n%s    \n}' % join_dict("        ", ctx.attr.engines),
-               '' if not ctx.attr.os else '"os": [\n%s    \n]' % join_list("        ", ctx.attr.os),
-               '' if not ctx.attr.cpu else '"cpu": [\n%s    \n]' % join_list("        ", ctx.attr.cpu),
-               '"preferGlobal": %s' % ('true' if ctx.attr.prefer_global else 'false'),
-               '"private": %s' % ('true' if ctx.attr.private else 'false'),
-               '' if not ctx.attr.publish_config else '"publishConfig": {\n%s    \n}' % join_dict("        ", ctx.attr.publish_config),
+                '"name": "%s"' % package_name,
+                '"version": "%s"' % ctx.attr.version,
+                "" if not ctx.attr.keywords else '"keywords": "%s"' % ctx.attr.keywords,
+                "" if not ctx.attr.homepage else '"homepage": "%s"' % ctx.attr.homepage,
+                "" if not ctx.attr.bugs else '"bugs": "%s"' % ctx.attr.bugs,
+                "" if not ctx.attr.description else '"description": "%s"' % ctx.attr.description,
+                "" if not ctx.attr.main else '"main": "%s"' % ctx.attr.main,
+                "" if not ctx.attr.types else '"types": "%s"' % ctx.attr.types,
+                "" if not ctx.attr.bin else '"bin": {\n%s    \n}' % join_dict("        ", ctx.attr.bin),
+                '"license": "%s"' % ctx.attr.license,
+                "" if not ctx.attr.man else '"man": [\n%s    \n]' % join_list("        ", ctx.attr.man),
+                "" if not ctx.attr.repository else '"repository": {\n%s    \n}' % join_dict("        ", ctx.attr.repository),
+                "" if not ctx.attr.dependencies else '"dependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.dependencies),
+                "" if not ctx.attr.dev_dependencies else '"devDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.dev_dependencies),
+                "" if not ctx.attr.peer_dependencies else '"peerDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.peer_dependencies),
+                "" if not ctx.attr.bundled_dependencies else '"bundledDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.bundled_dependencies),
+                "" if not ctx.attr.optional_dependencies else '"optionalDependencies": {\n%s    \n}' % join_dict("        ", ctx.attr.optional_dependencies),
+                "" if not ctx.attr.engines else '"engines": {\n%s    \n}' % join_dict("        ", ctx.attr.engines),
+                "" if not ctx.attr.os else '"os": [\n%s    \n]' % join_list("        ", ctx.attr.os),
+                "" if not ctx.attr.cpu else '"cpu": [\n%s    \n]' % join_list("        ", ctx.attr.cpu),
+                '"preferGlobal": %s' % ("true" if ctx.attr.prefer_global else "false"),
+                '"private": %s' % ("true" if ctx.attr.private else "false"),
+                "" if not ctx.attr.publish_config else '"publishConfig": {\n%s    \n}' % join_dict("        ", ctx.attr.publish_config),
             ]) + "\n}",
-            False
+            False,
         )
-    if package_name.startswith('@types/'):
-        tar_dir = '@types/'
+    if package_name.startswith("@types/"):
+        tar_dir = "@types/"
         out = ctx.actions.declare_file(package_name.replace(tar_dir, "") + "-types.tgz")
     else:
         tar_dir = package_name
         out = ctx.actions.declare_file(package_name + ".tgz")
     mvs = []
     for attr in ctx.attr.srcs:
-      for file in attr.files:
-        path = get_path(ctx, attr, file)
-        mvs.append("mkdir -p $(dirname $p/%s/%s)" % (package_name, path))
-        mvs.append("cp %s $p/%s/%s" % (file.path, package_name, path))
+        for file in attr.files:
+            path = get_path(ctx, attr, file)
+            mvs.append("mkdir -p $(dirname $p/%s/%s)" % (package_name, path))
+            mvs.append("cp %s $p/%s/%s" % (file.path, package_name, path))
     cmd = " \\\n  && ".join([
-      "export PATH",
-      "p=$PWD",
-      ] + mvs + [
-      "cp %s $p/%s" % (pkg.path, package_name),
-      "mkdir -p $(dirname %s)" % (out.path),
-      'if [ $(uname) == "Darwin" ] ; then export TAR_LINK_OPT="L" else export TAR_LINK_OPT="H"; fi',
-      "tar cfz${TAR_LINK_OPT} - ./%s > %s" % (tar_dir, out.path),
+        "export PATH",
+        "p=$PWD",
+    ] + mvs + [
+        "cp %s $p/%s" % (pkg.path, package_name),
+        "mkdir -p $(dirname %s)" % (out.path),
+        'if [ $(uname) == "Darwin" ] ; then export TAR_LINK_OPT="L" else export TAR_LINK_OPT="H"; fi',
+        "tar cfz${TAR_LINK_OPT} - ./%s > %s" % (tar_dir, out.path),
     ])
     cmd_file = ctx.actions.declare_file(ctx.label.name + "-npm-pkg-cmd")
     ctx.actions.write(
         output = cmd_file,
-        content = cmd
+        content = cmd,
     )
     outs = [out]
     ctx.actions.run_shell(
