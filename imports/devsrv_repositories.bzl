@@ -10,6 +10,7 @@ def devsrv_repositories(
     maven_install(
         name = "devsrv_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "gnu.getopt:java-getopt:" + getopt_version,
             "org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:" + java_servlet_version,

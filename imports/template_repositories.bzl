@@ -8,6 +8,7 @@ def template_repositories(
     maven_install(
         name = "template_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "gnu.getopt:java-getopt:" + getopt_version,
             "org.yaml:snakeyaml:" + snakeyaml_version,

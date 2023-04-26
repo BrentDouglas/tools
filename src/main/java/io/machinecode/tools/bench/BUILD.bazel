@@ -1,0 +1,13 @@
+load("//tools/java:java_package.bzl", "java_package")
+
+package(default_visibility = ["//visibility:public"])
+
+java_package(
+    name = "bench",
+    deps = [
+        "@io_machinecode_tools//tools/java:jmh",
+        "@jmh_m2//:org_openjdk_jmh_jmh_core",
+        "@jmh_m2//:tools_profiler_async_profiler",
+        "@jmh_m2//:tools_profiler_async_profiler_converter",
+    ],
+)

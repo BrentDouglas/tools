@@ -15,7 +15,6 @@ load("//imports:java_repositories.bzl", "java_repositories")
 
 java_repositories()
 
-load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("//imports:format_repositories.bzl", "format_repositories")
 
 format_repositories()

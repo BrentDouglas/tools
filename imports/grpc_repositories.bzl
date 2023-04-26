@@ -38,6 +38,7 @@ def grpc_repositories(
     maven_install(
         name = "grpc_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "io.grpc:grpc-auth:" + grpc_version,
             "io.grpc:grpc-core:" + grpc_version,

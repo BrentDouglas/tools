@@ -10,6 +10,7 @@ def sql_repositories(
     maven_install(
         name = "sql_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "gnu.getopt:java-getopt:" + getopt_version,
             "org.flywaydb:flyway-core:" + flyway_version,

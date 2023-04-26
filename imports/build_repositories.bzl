@@ -9,6 +9,7 @@ def build_repositories(
     maven_install(
         name = "build_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "com.google.javascript:closure-compiler:" + com_google_javascript_closure_compiler_version,
             "com.googlecode.htmlcompressor:htmlcompressor:" + com_googlecode_htmlcompressor_htmlcompressor_version,

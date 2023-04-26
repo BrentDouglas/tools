@@ -5,6 +5,12 @@ ANSI_CYAN = "\033[36m"
 ANSI_WHITE = "\033[37m"
 ANSI_RESET = "\033[00m"
 
+def class_name(src):
+    return src[src.rfind("/") + 1:-5]
+
+def class_full_name(src):
+    return src[src.rfind("java") + 1:-5].replace("/", ".")
+
 def is_archive(path):
     return is_zip(path) or is_jar(path) or is_tar(path)
 

@@ -10,9 +10,15 @@ filegroup(
 )
 
 filegroup(
-    name = "jars",
+    name = "profiler",
     srcs = [
         "build/async-profiler.jar",
+    ],
+)
+
+filegroup(
+    name = "converter",
+    srcs = [
         "build/converter.jar",
     ],
 )

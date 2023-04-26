@@ -14,6 +14,7 @@ def checkstyle_repositories(
     maven_install(
         name = "checkstyle_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "antlr:antlr:" + antlr_antlr_version,
             "org.antlr:antlr4-runtime:" + org_antlr_antlr4_runtime_version,

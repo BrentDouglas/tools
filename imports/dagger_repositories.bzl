@@ -11,6 +11,7 @@ def dagger_repositories(
     maven_install(
         name = "dagger_m2",
         repositories = maven_repositories,
+        fetch_sources = True,
         artifacts = [
             "com.google.dagger:dagger:" + dagger_version,
             "com.google.dagger:dagger-compiler:" + dagger_version,
