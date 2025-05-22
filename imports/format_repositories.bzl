@@ -1,8 +1,8 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 
 def format_repositories(
-        google_java_format_version = "1.16.0",
-        google_java_format_sha256 = "82819a2c5f7067712e0233661b864c1c034f6657d63b8e718b4a50e39ab028f6",
+        google_java_format_version = "1.27.0",
+        google_java_format_sha256 = "ed07239f3cb72e25bf2a0eae63e76831f9f11963bd19fc36a6f1d87016ac1763",
         com_github_bazelbuild_buildtools_version = "6.1.0",
         com_github_bazelbuild_buildtools_sha256 = "4e3e330089960e0962f908ba6feac0859faed070c5292e5cc207cfcc6a428fe5",
         com_google_protobuf_version = "3.13.0",
